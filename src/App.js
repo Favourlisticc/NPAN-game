@@ -1,24 +1,35 @@
 import logo from './logo.svg';
 import './App.css';
 
+
 function App() {
+  const letters = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Reacttttttyrururur
-        </a>
-      </header>
-    </div>
+    <div className="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Place</th>
+          <th>Animal</th>
+          <th>Thing</th>
+        </tr>
+      </thead>
+      <tbody>
+      {letters.map(letter => (
+            <tr key={letter}>
+              <td>{letter}</td>
+              <td contentEditable="true"></td>
+              <td contentEditable="true"></td>
+              <td contentEditable="true"></td>
+              <td contentEditable="true"></td>
+            </tr>
+          ))}
+        {/* Add more rows as needed */}
+      </tbody>
+    </table>
+  </div>
   );
 }
 
