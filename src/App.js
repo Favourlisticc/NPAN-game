@@ -3,7 +3,7 @@ import './App.css';
 
 
 function App() {
-  const letters = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
+  const letters = Array.from({ length: 5 }, (_, index) => String.fromCharCode(65 + index));
   return (
     <div className="table-container">
     <table>
