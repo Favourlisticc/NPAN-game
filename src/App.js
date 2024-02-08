@@ -19,6 +19,7 @@ function App() {
             <th>Place</th>
             <th>Animal</th>
             <th>Thing</th>
+            <th className='ml-10 bg-white'>00:00</th>
           </tr>
         </thead>
         <tbody>
@@ -29,6 +30,9 @@ function App() {
               <td className={selectedLetter !== letter ? 'disabled' : ''} contentEditable={selectedLetter === letter}></td>
               <td className={selectedLetter !== letter ? 'disabled' : ''} contentEditable={selectedLetter === letter}></td>
               <td className={selectedLetter !== letter ? 'disabled' : ''} contentEditable={selectedLetter === letter}></td>
+              <td className={selectedLetter !== letter ? 'disabled' : ''} contentEditable={selectedLetter === letter}>
+                <button className='bg-black text-white ml-2 px-5 py-1 rounded-md' >Submit</button>
+              </td>
             </tr>
           ))}
         </tbody>
