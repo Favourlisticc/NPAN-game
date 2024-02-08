@@ -1,3 +1,9 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -15,6 +21,9 @@ code {
 .table-container {
   margin: 0 auto;
   width: 80%;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-bottom: 30px;
 }
 
 table {
@@ -34,6 +43,10 @@ th {
 
 td {
   height: 50px;
+}
+
+.disabled {
+  background-color: #f2f2f2; /* Gray color */
 }
 
 /* Add additional styling as needed */
