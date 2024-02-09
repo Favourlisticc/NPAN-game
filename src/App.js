@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-
+import
 function App() {
   const letters = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
   const [selectedLetter, setSelectedLetter] = useState(null);
@@ -27,7 +27,7 @@ function App() {
 
   return (
     <div className="table-container">
-      <table>
+      {/* <table>
         <thead>
           <tr>
             <th></th>
@@ -52,7 +52,15 @@ function App() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+
+      <h1>Enter your Name</h1>
+      <input type='text'/>
+
+      <div>
+          <h1>Start Playing</h1>
+      </div>
+
     </div>
   );
 }
