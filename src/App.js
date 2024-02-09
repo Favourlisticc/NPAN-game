@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import
+import { Link } from "react-router-dom";
+
+
 function App() {
   const letters = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
   const [selectedLetter, setSelectedLetter] = useState(null);
@@ -54,11 +56,23 @@ function App() {
         </tbody>
       </table> */}
 
-      <h1>Enter your Name</h1>
-      <input type='text'/>
+      <h1 className='text-center text-5xl mt-32'>Enter your Name</h1>
+      <div className='flex justify-center'>
+        <input type='text'placeholder='Name' className='border-2 mt-6 h-8 px-2 w-52'/>
+      </div>
 
-      <div>
-          <h1>Start Playing</h1>
+      <div className='text text-center mt-28'>
+          <h1 className='te text-4xl mb-10'>Start Playing</h1>
+
+          <div className='mb-10'>
+          <a href="/" className='bg-blue-300 px-5 py-3 mb-52 rounded-sm text-white'>Create Room</a>
+
+          </div>
+
+          <div>
+          <a href="/" className='bg-blue-300 px-5 py-3 mb-52 rounded-sm text-white'>Join a Friend</a>
+
+          </div>
       </div>
 
     </div>
