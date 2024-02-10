@@ -55,7 +55,7 @@ export default function Navbar() {
 
     <div id="head-nav" className="fixed  left-0 right-0 w-full top-0 ">
       <div >
-        <div id="big screen" className="hidden lg:flex flex-col xl:flex-row justify-between pr-5 pl-8 h-16 bg-gray-300 ml-1 mr-1 rounded-md">
+        <div id="big screen" className="hidden lg:flex flex-col xl:flex-row justify-between pr-5 pl-8 h-16 bg-gray-300">
 
 
 
@@ -93,7 +93,7 @@ export default function Navbar() {
 
 
 {/* mobile dropdown */}
-        <div id="small-screen" style={{ zIndex: 99999 }} className=" flex lg:hidden ml-0.5 mr-0.5 rounded-md bg-gray-300 xl:flex-row justify-between h-10 pl-4 pr-5 xl:px-20">
+        <div id="small-screen" style={{ zIndex: 99999 }} className=" flex lg:hidden bg-gray-300 xl:flex-row justify-between h-10 pl-4 pr-5 xl:px-20">
 
 
 
