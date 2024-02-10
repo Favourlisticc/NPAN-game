@@ -3,6 +3,7 @@
 @import 'tailwindcss/utilities';
 @import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 
 
@@ -11,8 +12,12 @@ body{
   font-weight: 400;
   font-style: normal; */
 
-  font-family: "Indie Flower", cursive;
+  /* font-family: "Indie Flower", cursive;
   font-weight: 400;
+  font-style: normal; */
+
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
   font-style: normal;
 }
 
@@ -28,10 +33,10 @@ code {
 }
 
 .table-container {
-  margin: 0 auto;
-  width: 80%;
+ margin-left: 10px;
+margin-right: 10px;
   margin-top: 30px;
-  margin-left: auto;
+
   margin-bottom: 30px;
 }
 

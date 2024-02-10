@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../App.css';
 import { Link } from "react-router-dom";
+import Navbar from './navbar';
 
 function App() {
   const [userName, setUserName] = useState('');
@@ -10,28 +11,44 @@ function App() {
   };
 
   return (
-    <div className="table-container">
-      <h1 className='text-center text-5xl mt-32 max-sm:text-4xl'>Enter your Name</h1>
-      <div className='flex justify-center'>
-        <input
-          type='text'
-          placeholder='Name'
-          className='border-2 mt-6 h-12 px-2 w-52'
-          value={userName}
-          onChange={handleInputChange}
-        />
+    <div>
+      <Navbar />
+       <div className="table-container">
+      <h1 className='text-center text-5xl mt-20 max-sm:text-4xl'>NAPT</h1>
+      <div className='mt-5'>
+          <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4'>Play Online</button><br />
+          <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4'>Play with a friend(s)</button><br />
+          <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4'>Join a friend</button><br />
+          <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4'>How to play</button>
+
       </div>
 
-      <div className='text text-center mt-28'>
-        <h1 className='te text-4xl mb-10'>Start Playing</h1>
-        <div className='mb-10'>
-          <Link to={`/create-game-page?name=${userName}`} className='bg-blue-300 text-2xl px-5 py-3 mb-52 rounded-sm text-white'>Create Room</Link>
-        </div>
-        <div>
-          <Link to={`/join-friend?name=${userName}`} className='bg-blue-300 px-5 text-2xl py-3 mb-52 rounded-sm text-white'>Join a Friend</Link>
-        </div>
+      <div>
+      <div className="table-container mt-10">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Leader Board </th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+
+           <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+        {/* Add more rows as needed */}
+      </tbody>
+    </table>
+  </div>
       </div>
     </div>
+    </div>
+
   );
 }
 
