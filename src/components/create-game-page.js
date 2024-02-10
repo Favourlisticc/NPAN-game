@@ -7,8 +7,20 @@ function CreateGamePage() {
 
   return (
     <div>
-      <h1>Welcome, {userName}!</h1>
-      {/* Other content of the create game page */}
+      <h1 className='text-4xl mt-16'>Hello, {userName}! Ready</h1>
+      <div className='flex-col justify-center'>
+          <button>Name</button>
+          <button>Place</button>
+          <button>Things</button>
+          <button>Things</button>
+          <button>Things</button>
+          <button>Movies</button>
+          <button className='diff'>Continue</button>
+
+
+
+      </div>
+
     </div>
   );
 }
