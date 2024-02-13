@@ -12,6 +12,9 @@ function App() {
   const [joinshowInputModal, joinsetShowInputModal] = useState(false);
   const [joinshowConfirmationCard, joinsetShowConfirmationCard] = useState(false);
 
+  const [openHowtoPlay, setOpenHowtoPlay] = useState(false);
+
+
 
   const playhandleInputChange = (event) => {
     playsetUserName(event.target.value);
@@ -70,6 +73,15 @@ function App() {
     console.log('Link copied!');
   };
 
+
+  const hanglesetOpenHowtoPlay = () => {
+    setOpenHowtoPlay(true);
+  };
+
+  const handleclosesetOpenHowtoPlay = () => {
+    setOpenHowtoPlay(false);
+  };
+
   return (
     <div>
       <Navbar />
@@ -80,7 +92,7 @@ function App() {
           <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4 active:bg-gray-500 ' onClick={playhandlePlayOnlineClick}>Play with a friend(s)</button><br />
           <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4 active:bg-gray-500' onClick={joinhandlePlayOnlineClick}>Join a friend(s)</button><br />
 
-          <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4 active:bg-gray-500'>How to play?</button><br />
+          <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4 active:bg-gray-500' onClick={hanglesetOpenHowtoPlay}>How to play?</button><br />
 
       </div>
 
@@ -139,6 +151,21 @@ function App() {
                     </div>
                   </div>
                 )}
+
+        {openHowtoPlay && (
+                          <div className="modal-wrapper">
+                            <div className="bg-gray-200 w-full h-full">
+                              <span className="text-3xl float-right" onClick={handleclosesetOpenHowtoPlay}>&times;</span>
+
+                              <h1 className='mt-12 flex'>How To Play</h1>
+
+                              <p>The game is simple. The game creator sets the number of rounds and chooses the word categories.
+The game is player over a couple of rounds. At the beginning of every round, players get a new alphabet. Your job is to think of words that begin with that letter and fit the categories in the game.
+Each game round is timed at 60 seconds, but the game alsos end as soon as the first person submits their response. Think fast!</p>
+                              <button onClick={joinhandleContinueClick} className='mt-5 bg-black text-white w-52 h-8 rounded'>Continue</button>
+                            </div>
+                          </div>
+                        )}
 
       <div>
       <div className="table-container mt-10">
