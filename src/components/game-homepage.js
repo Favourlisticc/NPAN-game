@@ -122,6 +122,8 @@ function App() {
             <h2 className='text-xl font-medium mb-7'>Hello, {playuserName}!</h2>
             <Link to={`/game?name=${playuserName}`} className='border-2 py-3 px-1 rounded text-sky-600 underline'>{window.location.origin}/game?name={playuserName}</Link><br/>
             <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Copy Link</button>
+            <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Start Game</button>
+
            </div>
           </div>
         )}
@@ -148,6 +150,7 @@ function App() {
                         onChange={joinhandleInputChange}
                       /><br/>
                       <button onClick={joinhandleContinueClick} className='mt-5 bg-black text-white w-52 h-8 rounded'>Continue</button>
+
                     </div>
                   </div>
                 )}
