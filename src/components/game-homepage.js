@@ -120,8 +120,8 @@ function App() {
            <div className="modal">
            <span className="close" onClick={playhandleModalconfirmation}>&times;</span>
             <h2 className='text-xl font-medium mb-7'>Hello, {playuserName}!</h2>
-            <Link to={`/game?name=${playuserName}`} className='border-2 py-3 px-1 rounded text-sky-600 underline'>{window.location.origin}/game?name={playuserName}</Link><br/>
-            <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Copy Link</button>
+            <Link to={`/game?name=${playuserName}`} className=' text-xs border-2 py-3 px-1 rounded text-sky-600 underline'>{window.location.origin}/game?name={playuserName}</Link><br/>
+            <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Copy Link</button><br/>
             <button className='mt-8 bg-black text-white w-72 h-10 rounded'>
               <Link to={`/select-category/${playuserName}`}>Start Game</Link>
             </button>
