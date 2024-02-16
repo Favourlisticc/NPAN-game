@@ -132,11 +132,12 @@ function App() {
 
 {/* joingame */}
         {joinshowInputModal && (
-                  <div className="modal-wrapper">
-                    <div className="modal">
+                  <div className="modal-wrapper ">
+                    <div className="modal max-sm:w-80">
                       <span className="close" onClick={joinhandleModalClose}>&times;</span>
 
-                      <input
+                     <div>
+                     <input
                         type='text'
                         placeholder='Name'
                         className='border-2 mt-6 h-8 px-2 w-52 rounded'
@@ -151,6 +152,7 @@ function App() {
                         value={joinuserName}
                         onChange={joinhandleInputChange}
                       /><br/>
+                     </div>
                       <button onClick={joinhandleContinueClick} className='mt-5 bg-black text-white w-52 h-8 rounded'>Continue</button>
 
                     </div>

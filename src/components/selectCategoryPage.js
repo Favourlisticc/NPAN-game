@@ -7,7 +7,7 @@ const SelectCategoryPage = () => {
     <div className='mt-20'>
       <h2 className='text-3xl font-semi-bold'>Welcome, {name}!</h2>
       {/* Other content of the page */}
-      <div className='mt-5 flex flex-wrap justify-center text-center items-center ml-96 max-sm:ml-5' style={{width: "550px"}}>
+      <div className='mt-5 flex flex-wrap justify-center text-center items-center ml-96 mr-96 max-sm:ml-5 max-sm:mr-5 '>
           <div className='marr'>
               <input type='checkbox' name='name'/>
               <label for="name" className='text-lg'>Name</label>
