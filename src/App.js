@@ -4,14 +4,19 @@ import CreateGame from "./components/create-game-page"
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import SelectCategoryPage from "./components/selectCategoryPage";
+import MainGamePage from "./components/maingame"
 
 function App() {
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/create-game-page" element={<CreateGame />} />
+
         <Route path="/select-category/:name" element={<SelectCategoryPage />} />
+
+        <Route path="/game/:name" element={<MainGamePage />} />
+
+
         {/* Add more routes as needed */}
       </Routes>
     </div>
