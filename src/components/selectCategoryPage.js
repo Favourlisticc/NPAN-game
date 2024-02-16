@@ -10,6 +10,8 @@ const SelectCategoryPage = () => {
     const [timer, setTimer] = useState(60); // Initial timer value in seconds
     const [timerId, setTimerId] = useState(null);
 
+    const [randomLetter, setRandomLetter] = useState('');
+
     useEffect(() => {
         // Start the timer when the component mounts
         const id = setInterval(() => {
@@ -20,6 +22,14 @@ const SelectCategoryPage = () => {
         // Clean up timer on component unmount
         return () => clearInterval(id);
     }, []);
+
+    const generateRandomLetter = () => {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const randomIndex = Math.floor(Math.random() * alphabet.length);
+        return alphabet[randomIndex];
+    };
+
+
 
     const handleCheckboxChange = (event) => {
         const { name, checked } = event.target;
@@ -32,12 +42,14 @@ const SelectCategoryPage = () => {
 
     const handleCreateRoomClick = () => {
         setShowCard(true);
+        setRandomLetter(generateRandomLetter());
     };
 
     const playhandleModalClose = () => {
         setShowCard(false);
       };
 
+      c
   console.log('Selected Categories:', selectedCategories, name); // Log selected categories to see if they are being updated correctly
 
   return (
@@ -98,6 +110,7 @@ const SelectCategoryPage = () => {
                <div className="modal-wrapper w-full">
                <div className="w-full bg-white h-full">
               <span className="close" onClick={playhandleModalClose}>&times;</span>
+              <div>Random Letter: {randomLetter}</div>
 
                     <h3>{name}</h3>
                     <div>Timer: {timer} seconds</div>
