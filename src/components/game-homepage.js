@@ -122,7 +122,9 @@ function App() {
             <h2 className='text-xl font-medium mb-7'>Hello, {playuserName}!</h2>
             <Link to={`/game?name=${playuserName}`} className='border-2 py-3 px-1 rounded text-sky-600 underline'>{window.location.origin}/game?name={playuserName}</Link><br/>
             <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Copy Link</button>
-            <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Start Game</button>
+            <button className='mt-8 bg-black text-white w-72 h-10 rounded'>
+              <Link to={`/select-category/${playuserName}`}>Start Game</Link>
+            </button>
 
            </div>
           </div>
@@ -162,13 +164,13 @@ function App() {
 
                               <h1 className='mt-12 flex text-blue-900 text-4xl pl-10'>How To Play</h1>
 
-                              <p className='fo font-bold text-left pl-10 pr-10 leading-10'>The game is simple. The game creator sets the number of rounds and chooses the word categories.
-The game is player over a couple of rounds. At the beginning of every round, players get a new alphabet. Your job is to think of words that begin with that letter and fit the categories in the game.
-Each game round is timed at 60 seconds, but the game alsos end as soon as the first person submits their response. Think fast!</p>
+                              <p className='font-bold text-left pl-10 pr-10 leading-10'>The game is simple. The game creator chooses the word categories.
+The game is played over a couple of rounds. At the beginning of every round, players get a new alphabet. Your job is to think of words that begin with that letter and fit the categories in the game.
+Each game round is timed at 60 seconds, but the game also end as soon as the first person submits their response. Think fast!</p>
 
-                              <h1 className='mt-12 flex text-blue-900 text-4xl pl-10'>Creating A Game and Game Setup</h1>
+                              <h1 className='mt-12 flex text-blue-900 text-4xl pl-10 max-sm:pl-6'>Creating A Game and Game Setup</h1>
 
-                              <p className='fo font-bold text-left pl-10 pr-10 leading-10'>Head on over to the "Create New Game" section on the previous page to create a new game. You will be able to specify the number of rounds you would like to play as well as any additional categories you would want to include besides, "Name", "Place", "Animal" and "Thing".
+                              <p className='font-bold text-left pl-10 pr-10 leading-10'>Head on over to the "Create New Game" section on the previous page to create a new game.
 You can also define "scoring mechanics". Select "Score Yourself" if you want people to score themselves, or select "Score Each Other" to score your friends.
 Once you have created the game, you will get a "Game Code". Create the room and send the Game Code to your friends who will be able to use it join the room. Once your friends have joined, the creator will be able to start the game!</p>
 
