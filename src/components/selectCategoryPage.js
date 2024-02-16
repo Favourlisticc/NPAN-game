@@ -49,7 +49,6 @@ const SelectCategoryPage = () => {
         setShowCard(false);
       };
 
-      c
   console.log('Selected Categories:', selectedCategories, name); // Log selected categories to see if they are being updated correctly
 
   return (
@@ -58,7 +57,7 @@ const SelectCategoryPage = () => {
       {/* Other content of the page */}
       <div className='mt-5 flex flex-wrap justify-center text-center items-center ml-96 mr-96 max-sm:ml-5 max-sm:mr-5 '>
           <div className='marr'>
-          <input onChange={handleCheckboxChange} type='checkbox' name='categoryName'/>
+          <input onChange={handleCheckboxChange} type='checkbox' name='Names'/>
 
               <label for="name" className='text-lg'>Name</label>
           </div>
@@ -117,8 +116,8 @@ const SelectCategoryPage = () => {
 
                         {selectedCategories.map((category, index) => (
                             <div key={index}>
-                            <label>{category}:</label>
-                            <input type='text' value="" placeholder={category}/>
+
+                            <input type='text' className='inputt' value="" placeholder={category}/>
                         </div>
                         ))}
 
