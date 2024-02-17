@@ -87,7 +87,7 @@ function App() {
       <Navbar />
        <div className="table-container">
       <h1 className='text-center text-5xl mt-20 max-sm:text-4xl'>NAPT</h1>
-      <div className='mt-5'>
+      <div className='mt-5 text-center'>
           <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4 active:bg-gray-500 ' >Play Online</button><br />
           <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4 active:bg-gray-500 ' onClick={playhandlePlayOnlineClick}>Play with a friend(s)</button><br />
           <button className='bg-gray-300 font-medium w-52 rounded-md py-2 mb-4 active:bg-gray-500' onClick={joinhandlePlayOnlineClick}>Join a friend(s)</button><br />
