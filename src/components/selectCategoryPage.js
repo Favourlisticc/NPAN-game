@@ -35,16 +35,17 @@ const SelectCategoryPage = () => {
         return alphabet[randomIndex];
     };
 
-
-
     const handleCheckboxChange = (event) => {
         const { name, checked } = event.target;
         if (checked) {
             setSelectedCategories((prevSelectedCategories) => [...prevSelectedCategories, name]);
         } else {
-            setSelectedCategories((prevSelectedCategories) => prevSelectedCategories.filter((category) => category !== name));
+            setSelectedCategories((prevSelectedCategories) =>
+                prevSelectedCategories.filter((category) => category !== name)
+            );
         }
     };
+
 
     const handleCreateRoomClick = () => {
         setShowCard(true);
@@ -133,7 +134,8 @@ const SelectCategoryPage = () => {
                             {selectedCategories.map((category, index) => (
                                 <div key={index} className=''>
 
-                                <input type='text' className='border-2 p-3 m-3' value="" placeholder={category}/>
+                                <input type='text' className='border-2 p-3 m-3' 
+ placeholder={category}/>
 
 
                             </div>
