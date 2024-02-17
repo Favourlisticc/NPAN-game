@@ -7,32 +7,80 @@ const SelectCategoryPage = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [showCard, setShowCard] = useState(false);
 
-    const [timer, setTimer] = useState(30); // Initial timer value in seconds
+    const [timer, setTimer] = useState(); // Initial timer value in seconds
     const [timerId, setTimerId] = useState(null);
 
     const [randomLetter, setRandomLetter] = useState('');
 
+    const [totalScore, setTotalScore] = useState(0); // Total score state
+    const [showResultCard, setShowResultCard] = useState(false); // State to control result card visibility
+
+
+    const handleSubmitResponse = () => {
+        let totalScore = 0;
+        const alphabetLowerCase = randomLetter.toLowerCase();
+        const alphabetUpperCase = randomLetter.toUpperCase();
+    
+        // Calculate score for each category
+        selectedCategories.forEach((category) => {
+            const userInput = document.getElementById(category).value.trim();
+            if (userInput === '') {
+                // Empty input gets 0 score
+                totalScore += 0;
+            } else if (userInput[0] === alphabetLowerCase || userInput[0] === alphabetUpperCase) {
+                // Correct input gets 10 score
+                totalScore += 10;
+            } else {
+                // Incorrect input gets 5 score
+                totalScore += 5;
+            }
+        });
+    
+        // Display result in a new card
+        setTotalScore(totalScore);
+        setShowResultCard(true);
+    };
+
+
     useEffect(() => {
         let timerId;
         if (showCard) {
+            setTimer(60); // Set timer to 60 seconds
             timerId = setInterval(() => {
                 setTimer((prevTimer) => {
                     if (prevTimer === 1) {
-                        clearInterval(timerId); // Clear interval when timer reaches 0
-                        setShowCard(false); // Hide the card
+                        setShowCard(false); // Hide the card after 60 seconds
+                        clearInterval(timerId); // Clear interval after 60 seconds
                     }
                     return prevTimer - 1;
                 });
-            }, 1000);
+            }, 1000); // Update the timer every second
         }
         return () => clearInterval(timerId);
     }, [showCard]);
+
 
 
     const generateRandomLetter = () => {
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const randomIndex = Math.floor(Math.random() * alphabet.length);
         return alphabet[randomIndex];
+    };
+
+    const calculateScoreForCategory = (category) => {
+        let score = 0;
+        const userInput = document.getElementById(category)?.value.trim();
+        if (userInput === '') {
+            score = 0;
+        } else if (
+            userInput[0].toLowerCase() === randomLetter.toLowerCase() ||
+            userInput[0].toUpperCase() === randomLetter.toUpperCase()
+        ) {
+            score = 10;
+        } else {
+            score = 5;
+        }
+        return score;
     };
 
     const handleCheckboxChange = (event) => {
@@ -132,23 +180,41 @@ const SelectCategoryPage = () => {
 
                             <div className='flex mt-10 justify-center flex-wrap ml-52 mr-52 max-sm:ml-0 max-sm:mr-0'>
                             {selectedCategories.map((category, index) => (
-                                <div key={index} className=''>
+                               <div key={index} className=''>
+                                 <input type='text' id={category} className='border-2 p-3 m-3' placeholder={category} />
+                               </div>
 
-                                <input type='text' className='border-2 p-3 m-3' 
- placeholder={category}/>
-
-
-                            </div>
                             ))}
                             </div>
                             <div className='flex justify-center mt-5'>
-                             <button className='mt-5 bg-blue-900 text-white w-64 h-16 text-xl'>Submit response</button>
+                             <button onClick={handleSubmitResponse} className='mt-5 bg-blue-900 text-white w-64 h-16 text-xl'>Submit response</button>
 
                             </div>
                    </div>
 
 
                 </div>
+                </div>
+            )}
+
+            {showResultCard && (
+                <div className="fixed top-0 right-0 left-0 w-full h-full">
+                    <div className="w-full bg-white h-full pt-32" style={{ overflowY: "auto" }}>
+                    <h2 className='text-2xl font-semi-bold text-center'>{name}!</h2>
+                        <div className='text-3xl flex justify-center mt-8'> <p className='text-blue-300'> Your- </p>   Result </div>
+                        
+                        <div className='mt-5'>
+                            {selectedCategories.map((category, index) => (
+                                <div key={index} className='flex justify-center'>
+                                    <span>{category}</span>
+                                    <span>{calculateScoreForCategory(category)}</span>
+                                </div>
+                            ))}
+                            <div className='text-center text-2xl mt-5'>
+                            Total Score: {totalScore}
+                        </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
