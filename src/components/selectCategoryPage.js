@@ -15,6 +15,18 @@ const SelectCategoryPage = () => {
     const [totalScore, setTotalScore] = useState(0); // Total score state
     const [showResultCard, setShowResultCard] = useState(false); // State to control result card visibility
 
+    const [categoryInputs, setCategoryInputs] = useState({});
+
+
+
+    const handleInputChange = (event) => {
+        const { id, value } = event.target;
+        setCategoryInputs((prevInputs) => ({
+            ...prevInputs,
+            [id]: value.trim(),
+        }));
+    };
+
 
     const handleSubmitResponse = () => {
         let totalScore = 0;
@@ -104,6 +116,11 @@ const SelectCategoryPage = () => {
         setShowCard(false);
       };
 
+      const showhandleModalClose = () => {
+        setShowResultCard(false);
+        setShowCard(false);
+      };
+
   console.log('Selected Categories:', selectedCategories, name); // Log selected categories to see if they are being updated correctly
 
   return (
@@ -120,37 +137,37 @@ const SelectCategoryPage = () => {
                 </div>
 
                 <div className='marr'>
-                    <input onChange={handleCheckboxChange} type='checkbox' name='place'/>
+                    <input onChange={handleCheckboxChange} type='checkbox' name='Place'/>
                     <label for="place" className='text-lg'>Place</label>
                 </div>
 
                 <div className='marr'>
-                    <input onChange={handleCheckboxChange} type='checkbox' name='animal'/>
+                    <input onChange={handleCheckboxChange} type='checkbox' name='Animal'/>
                     <label for="animal" className='text-lg'>Animal</label>
                 </div>
 
                 <div className='marr'>
-                    <input onChange={handleCheckboxChange} type='checkbox' name='thing'/>
+                    <input onChange={handleCheckboxChange} type='checkbox' name='Thing'/>
                     <label for="thing" className='text-lg'>Thing</label>
                 </div>
 
                 <div className='marr'>
-                    <input onChange={handleCheckboxChange} type='checkbox' name='song'/>
+                    <input onChange={handleCheckboxChange} type='checkbox' name='Song'/>
                     <label for="song" className='text-lg'>Song</label>
                 </div>
 
                 <div className='marr'>
-                    <input onChange={handleCheckboxChange} type='checkbox' name='fruits'/>
+                    <input onChange={handleCheckboxChange} type='checkbox' name='Fruits'/>
                     <label for="fruits" className='text-lg'>Fruits</label>
                 </div>
 
                 <div className='marr'>
-                    <input onChange={handleCheckboxChange} type='checkbox' name='subject'/>
+                    <input onChange={handleCheckboxChange} type='checkbox' name='Subject'/>
                     <label for="subject">Subject</label>
                 </div>
 
                 <div className='marr'>
-                    <input onChange={handleCheckboxChange} type='checkbox' name='celebrities'/>
+                    <input onChange={handleCheckboxChange} type='checkbox' name='Celebrities'/>
                     <label for="celebrities"  className='text-lg'>Celebrities</label>
                 </div>
 
@@ -181,7 +198,7 @@ const SelectCategoryPage = () => {
                             <div className='flex mt-10 justify-center flex-wrap ml-52 mr-52 max-sm:ml-0 max-sm:mr-0'>
                             {selectedCategories.map((category, index) => (
                                <div key={index} className=''>
-                                 <input type='text' id={category} className='border-2 p-3 m-3' placeholder={category} />
+                                 <input type='text' id={category} className='border-2 p-3 m-3' placeholder={category} onChange={handleInputChange} />
                                </div>
 
                             ))}
@@ -199,18 +216,21 @@ const SelectCategoryPage = () => {
 
             {showResultCard && (
                 <div className="fixed top-0 right-0 left-0 w-full h-full">
-                    <div className="w-full bg-white h-full pt-32" style={{ overflowY: "auto" }}>
-                    <h2 className='text-2xl font-semi-bold text-center'>{name}!</h2>
+                    <div className="w-full bg-white h-full " style={{ overflowY: "auto" }}>
+                <span className="text-5xl float-right pr-7 pt-3" onClick={showhandleModalClose}>&times;</span>
+
+                    <h2 className='text-2xl font-semi-bold text-center pt-32'>{name}!</h2>
                         <div className='text-3xl flex justify-center mt-8'> <p className='text-blue-300'> Your- </p>   Result </div>
-                        
+
                         <div className='mt-5'>
                             {selectedCategories.map((category, index) => (
                                 <div key={index} className='flex justify-center'>
-                                    <span>{category}</span>
-                                    <span>{calculateScoreForCategory(category)}</span>
+                                    <span className='text-xl mr-20 mt-2 flex'>{category} : <p className='text-blue-500'>{categoryInputs[category]}</p> =</span>
+                                    <span></span>
+                                    <span className='text-xl mt-2 ml-3 underline'>{calculateScoreForCategory(category)}</span>
                                 </div>
                             ))}
-                            <div className='text-center text-2xl mt-5'>
+                            <div className='text-center mr-20 text-2xl mt-5'>
                             Total Score: {totalScore}
                         </div>
                         </div>
