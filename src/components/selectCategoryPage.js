@@ -18,24 +18,22 @@ const SelectCategoryPage = () => {
 
     const checkSpelling = async () => {
         try {
-            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+            const response = await fetch(`https://api.datamuse.com/words?sp=${word}&max=5`);
             const data = await response.json();
-            // Check if the word is misspelled and get suggestions if available
-            if (data.title === 'No Definitions Found') {
-                setSuggestions(data.suggestions || []);
-            } else if (data.length > 0) {
-                // If data is returned, it means the word is spelled correctly
-                setSuggestions([]);
+            // Check if suggestions are available
+            if (Array.isArray(data) && data.length > 0) {
+                // Extract suggestions from the response
+                const suggestionList = data.map((item) => item.word);
+                setSuggestions(suggestionList);
             } else {
-                // Handle the case when data is returned but no definitions are found
-                // This may occur if the word is very rarely used or has multiple forms
-                // In this case, you might want to clear suggestions or display a message
+                // If no suggestions are available, clear the suggestions array
                 setSuggestions([]);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
+    
 
     useEffect(() => {
         if (word.trim() !== '') {
