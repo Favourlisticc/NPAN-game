@@ -2,22 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 const SelectCategoryPage = () => {
-    const { name } = useParams(); // Destructure name from useParams()
+    const { name } = useParams();
+    const [word, setWord] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+
+    const checkSpelling = async () => {
+        try {
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+            const data = await response.json();
+            // Check if the word is misspelled and get suggestions if available
+            if (data.title === 'No Definitions Found') {
+                setSuggestions(data.suggestions || []);
+            } else {
+                setSuggestions([]);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (word.trim() !== '') {
+            checkSpelling();
+        }
+    }, [word]);
 
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [showCard, setShowCard] = useState(false);
-
-    const [timer, setTimer] = useState(); // Initial timer value in seconds
+    const [timer, setTimer] = useState();
     const [timerId, setTimerId] = useState(null);
-
     const [randomLetter, setRandomLetter] = useState('');
-
-    const [totalScore, setTotalScore] = useState(0); // Total score state
-    const [showResultCard, setShowResultCard] = useState(false); // State to control result card visibility
-
+    const [totalScore, setTotalScore] = useState(0);
+    const [showResultCard, setShowResultCard] = useState(false);
     const [categoryInputs, setCategoryInputs] = useState({});
-
-
 
     const handleInputChange = (event) => {
         const { id, value } = event.target;
@@ -27,51 +44,42 @@ const SelectCategoryPage = () => {
         }));
     };
 
-
     const handleSubmitResponse = () => {
         let totalScore = 0;
         const alphabetLowerCase = randomLetter.toLowerCase();
         const alphabetUpperCase = randomLetter.toUpperCase();
-    
-        // Calculate score for each category
+
         selectedCategories.forEach((category) => {
-            const userInput = document.getElementById(category).value.trim();
+            const userInput = categoryInputs[category] || '';
             if (userInput === '') {
-                // Empty input gets 0 score
                 totalScore += 0;
             } else if (userInput[0] === alphabetLowerCase || userInput[0] === alphabetUpperCase) {
-                // Correct input gets 10 score
                 totalScore += 10;
             } else {
-                // Incorrect input gets 5 score
                 totalScore += 5;
             }
         });
-    
-        // Display result in a new card
+
         setTotalScore(totalScore);
         setShowResultCard(true);
     };
 
-
     useEffect(() => {
         let timerId;
         if (showCard) {
-            setTimer(60); // Set timer to 60 seconds
+            setTimer(60);
             timerId = setInterval(() => {
                 setTimer((prevTimer) => {
                     if (prevTimer === 1) {
-                        setShowCard(false); // Hide the card after 60 seconds
-                        clearInterval(timerId); // Clear interval after 60 seconds
+                        setShowCard(false);
+                        clearInterval(timerId);
                     }
                     return prevTimer - 1;
                 });
-            }, 1000); // Update the timer every second
+            }, 1000);
         }
         return () => clearInterval(timerId);
     }, [showCard]);
-
-
 
     const generateRandomLetter = () => {
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -81,7 +89,7 @@ const SelectCategoryPage = () => {
 
     const calculateScoreForCategory = (category) => {
         let score = 0;
-        const userInput = document.getElementById(category)?.value.trim();
+        const userInput = categoryInputs[category] || '';
         if (userInput === '') {
             score = 0;
         } else if (
@@ -106,7 +114,6 @@ const SelectCategoryPage = () => {
         }
     };
 
-
     const handleCreateRoomClick = () => {
         setShowCard(true);
         setRandomLetter(generateRandomLetter());
@@ -114,23 +121,20 @@ const SelectCategoryPage = () => {
 
     const playhandleModalClose = () => {
         setShowCard(false);
-      };
+    };
 
-      const showhandleModalClose = () => {
+    const showhandleModalClose = () => {
         setShowResultCard(false);
         setShowCard(false);
-      };
+    };
 
-  console.log('Selected Categories:', selectedCategories, name); // Log selected categories to see if they are being updated correctly
-
-  return (
-    <div className='mt-20'>
-
-      <div className='text-center'>
-          <h2 className='text-3xl font-semi-bold'>Welcome, {name}!</h2>
-            {/* Other content of the page */}
-            <div className='mt-5 flex flex-wrap justify-center text-center items-center ml-96 mr-96 max-sm:ml-5 max-sm:mr-5 '>
-                <div className='marr'>
+    return (
+        <div className='mt-20'>
+            <div className='text-center'>
+                <h2 className='text-3xl font-semi-bold'>Welcome, {name}!</h2>
+                <div className='mt-5 flex flex-wrap justify-center text-center items-center ml-96 mr-96 max-sm:ml-5 max-sm:mr-5 '>
+                    {/* Checkbox inputs */}
+                    <div className='marr'>
                 <input onChange={handleCheckboxChange} type='checkbox' name='Names'/>
 
                     <label for="name" className='text-lg'>Name</label>
@@ -170,20 +174,18 @@ const SelectCategoryPage = () => {
                     <input onChange={handleCheckboxChange} type='checkbox' name='Celebrities'/>
                     <label for="celebrities"  className='text-lg'>Celebrities</label>
                 </div>
-
-
-            </div>
-
-                <button className='mt-5 bg-blue-900 text-white w-64 h-16 text-xl' onClick={handleCreateRoomClick}>Create Room</button>
-
+                </div>
+                <button className='mt-5 bg-blue-900 text-white w-64 h-16 text-xl' onClick={handleCreateRoomClick}>
+                    Create Room
+                </button>
                 <br />
                 <button className='mt-5 bg-gray-900 text-white w-64 h-16 text-xl'>Cancel</button>
-        </div>
+            </div>
 
-      {showCard && (
-               <div className="p fixed top-0 right-0 left-0 w-full h-full">
-               <div className="w-full bg-white h-full" style={{ overflowY: "auto" }}>
-                <span className="text-5xl float-right pr-7 pt-3" onClick={playhandleModalClose}>&times;</span>
+            {showCard && (
+                <div className='p fixed top-0 right-0 left-0 w-full h-full'>
+                     <div className="w-full bg-white h-full" style={{ overflowY: "auto" }}>
+                      <span className="text-5xl float-right pr-7 pt-3" onClick={playhandleModalClose}>&times;</span>
 
 
                    <div className='pt-20' >
@@ -215,9 +217,9 @@ const SelectCategoryPage = () => {
             )}
 
             {showResultCard && (
-                <div className="fixed top-0 right-0 left-0 w-full h-full">
-                    <div className="w-full bg-white h-full " style={{ overflowY: "auto" }}>
-                <span className="text-5xl float-right pr-7 pt-3" onClick={showhandleModalClose}>&times;</span>
+                <div className='fixed top-0 right-0 left-0 w-full h-full'>
+                     <div className="w-full bg-white h-full " style={{ overflowY: "auto" }}>
+                    <span className="text-5xl float-right pr-7 pt-3" onClick={showhandleModalClose}>&times;</span>
 
                     <h2 className='text-2xl font-semi-bold text-center pt-32'>{name}!</h2>
                         <div className='text-3xl flex justify-center mt-8'> <p className='text-blue-300'> Your- </p>   Result </div>
@@ -237,9 +239,8 @@ const SelectCategoryPage = () => {
                     </div>
                 </div>
             )}
-
-    </div>
-  );
+        </div>
+    );
 };
 
-export default SelectCategoryPage
+export default SelectCategoryPage;
