@@ -6,6 +6,16 @@ const SelectCategoryPage = () => {
     const [word, setWord] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
+
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [showCard, setShowCard] = useState(false);
+    const [timer, setTimer] = useState();
+
+    const [randomLetter, setRandomLetter] = useState('');
+    const [totalScore, setTotalScore] = useState(0);
+    const [showResultCard, setShowResultCard] = useState(false);
+    const [categoryInputs, setCategoryInputs] = useState({});
+
     const checkSpelling = async () => {
         try {
             const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
@@ -13,7 +23,13 @@ const SelectCategoryPage = () => {
             // Check if the word is misspelled and get suggestions if available
             if (data.title === 'No Definitions Found') {
                 setSuggestions(data.suggestions || []);
+            } else if (data.length > 0) {
+                // If data is returned, it means the word is spelled correctly
+                setSuggestions([]);
             } else {
+                // Handle the case when data is returned but no definitions are found
+                // This may occur if the word is very rarely used or has multiple forms
+                // In this case, you might want to clear suggestions or display a message
                 setSuggestions([]);
             }
         } catch (error) {
@@ -27,14 +43,7 @@ const SelectCategoryPage = () => {
         }
     }, [word]);
 
-    const [selectedCategories, setSelectedCategories] = useState([]);
-    const [showCard, setShowCard] = useState(false);
-    const [timer, setTimer] = useState();
-    const [timerId, setTimerId] = useState(null);
-    const [randomLetter, setRandomLetter] = useState('');
-    const [totalScore, setTotalScore] = useState(0);
-    const [showResultCard, setShowResultCard] = useState(false);
-    const [categoryInputs, setCategoryInputs] = useState({});
+    console.log("hello",suggestions)
 
     const handleInputChange = (event) => {
         const { id, value } = event.target;
@@ -48,7 +57,7 @@ const SelectCategoryPage = () => {
         let totalScore = 0;
         const alphabetLowerCase = randomLetter.toLowerCase();
         const alphabetUpperCase = randomLetter.toUpperCase();
-
+    
         selectedCategories.forEach((category) => {
             const userInput = categoryInputs[category] || '';
             if (userInput === '') {
@@ -57,12 +66,18 @@ const SelectCategoryPage = () => {
                 totalScore += 10;
             } else {
                 totalScore += 5;
+                // If the first letter of the input doesn't match the random letter, check if it's a misspelled word
+                if (suggestions.length > 0 && suggestions.includes(userInput)) {
+                    // If the input word is found in suggestions, deduct points and show suggestions
+                    totalScore -= 5;
+                }
             }
         });
-
+    
         setTotalScore(totalScore);
         setShowResultCard(true);
     };
+
 
     useEffect(() => {
         let timerId;
@@ -216,29 +231,45 @@ const SelectCategoryPage = () => {
                 </div>
             )}
 
-            {showResultCard && (
-                <div className='fixed top-0 right-0 left-0 w-full h-full'>
-                     <div className="w-full bg-white h-full " style={{ overflowY: "auto" }}>
-                    <span className="text-5xl float-right pr-7 pt-3" onClick={showhandleModalClose}>&times;</span>
+{showResultCard && (
+    <div className='fixed top-0 right-0 left-0 w-full h-full'>
+        <div className="w-full bg-white h-full " style={{ overflowY: "auto" }}>
+            <span className="text-5xl float-right pr-7 pt-3" onClick={showhandleModalClose}>&times;</span>
 
-                    <h2 className='text-2xl font-semi-bold text-center pt-32'>{name}!</h2>
-                        <div className='text-3xl flex justify-center mt-8'> <p className='text-blue-300'> Your- </p>   Result </div>
+            <h2 className='text-2xl font-semi-bold text-center pt-32'>{name}!</h2>
+            <div className='text-3xl flex justify-center mt-8'>
+                <p className='text-blue-300'> Your- </p> Result
+            </div>
 
-                        <div className='mt-5'>
-                            {selectedCategories.map((category, index) => (
-                                <div key={index} className='flex justify-center'>
-                                    <span className='text-xl mr-20 mt-2 flex'>{category} : <p className='text-blue-500'>{categoryInputs[category]}</p> =</span>
-                                    <span></span>
-                                    <span className='text-xl mt-2 ml-3 underline'>{calculateScoreForCategory(category)}</span>
-                                </div>
-                            ))}
-                            <div className='text-center mr-20 text-2xl mt-5'>
-                            Total Score: {totalScore}
-                        </div>
-                        </div>
+            <div className='mt-5'>
+                {selectedCategories.map((category, index) => (
+                    <div key={index} className='flex justify-center'>
+                        <span className='text-xl mr-20 mt-2 flex'>
+                            {category} : 
+                            <p className='text-blue-500'>
+                                {categoryInputs[category]}
+                            </p> 
+                            =
+                        </span>
+                        {calculateScoreForCategory(category) === 0 ? (
+                            <span className='text-xl mt-2 ml-3 underline'>
+                                Misspelled. Suggestions: {suggestions.join(', ')}
+                            </span>
+                        ) : (
+                            <span className='text-xl mt-2 ml-3 underline'>
+                                Score: {calculateScoreForCategory(category)}
+                            </span>
+                        )}
                     </div>
+                ))}
+                <div className='text-center mr-20 text-2xl mt-5'>
+                    Total Score: {totalScore}
                 </div>
-            )}
+            </div>
+        </div>
+    </div>
+)}
+
         </div>
     );
 };
