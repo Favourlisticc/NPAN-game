@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import spellchecker from 'spellchecker';
 
 
 
@@ -17,152 +19,75 @@ const SelectCategoryPage = () => {
     const [misspelledWords, setMisspelledWords] = useState([]);
     const [result, setResult] = useState(null); // State for fetched data
 
-    useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-            const data = await response.json();
-            setResult(data); // Update result state with fetched data
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
-        };
-    
-        if (word.trim() !== '') {
-          fetchData();
-        }
-      }, [word]);
 
-      const handleSubmitResponse = async () => {
+    async function run(text) {
+        try {
+            const response = await axios.post(
+                'https://api.sapling.ai/api/v1/statistics',
+                {
+                    "key": 'DXY4N588FKUPFTI8NHFY34C4XM25IEHF',
+                    text,
+                },
+            );
+            const {status, data} = response;
+            console.log({status});
+            console.log(JSON.stringify(data, null, 4));
+            return data;
+        } catch (err) {
+            const { msg } = err.response.data;
+            console.log({err: msg});
+            throw new Error(msg);
+        }
+    }
+
+
+    const handleSubmitResponse = async () => {
         let totalScore = 0;
         const alphabetLowerCase = randomLetter.toLowerCase();
         const alphabetUpperCase = randomLetter.toUpperCase();
         const updatedCategories = [...selectedCategories]; // Create a copy of selected categories
-    
+
         for (let i = 0; i < selectedCategories.length; i++) {
-          const category = selectedCategories[i];
-          const userInput = categoryInputs[category] || '';
-    
-          if (userInput !== '') {
-            if (
-              userInput[0].toLowerCase() === alphabetLowerCase ||
-              userInput[0].toUpperCase() === alphabetUpperCase
-            ) {
-              totalScore += 10;
-            } else {
-              totalScore += 5;
-    
-              // Inside handleSubmitResponse function
-              try {
-                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${userInput}`);
-                const data = await response.json();
-                console.log('Word Data:', data); // Debug log to check API response
-    
-                // Check if the API returns a valid response
-                if (Array.isArray(data) && data.length > 0) {
-                  // Update category with the word's meaning
-                  updatedCategories[i] = {
-                    word: userInput,
-                    meaning: data[0].meanings[0].definitions[1].definition,
-                  };
+            const category = selectedCategories[i];
+            const userInput = categoryInputs[category] || '';
+
+            if (userInput !== '') {
+                if (
+                    userInput[0].toLowerCase() === alphabetLowerCase ||
+                    userInput[0].toUpperCase() === alphabetUpperCase
+                ) {
+                    totalScore += 10;
                 } else {
-                  // If the word is not found, remove it from selected categories
-                  updatedCategories.splice(i, 1);
-                  i--; // Decrement i as the array length has decreased
+                    // Use Sapling API for spell checking
+                    try {
+                        await run(userInput);
+                        // No errors means spelling is correct
+                        totalScore += 10;
+                    } catch (error) {
+                        // Handle misspelled word
+                        console.error('Misspelled word:', userInput);
+                        setMisspelledWords(prevMisspelledWords => [
+                            ...prevMisspelledWords,
+                            { word: userInput }
+                        ]);
+                    }
                 }
-              } catch (error) {
-                console.error('Error fetching data:', error);
-    
-                // If there's an error fetching data, remove the word from selected categories
-                updatedCategories.splice(i, 1);
-                i--; // Decrement i as the array length has decreased
-              }
             }
-          }
         }
-    
+
         // Update state with the updated categories and total score
         setSelectedCategories(updatedCategories);
         setTotalScore(totalScore);
         setShowResultCard(true);
-      };
+    };
 
-
-
-      const handleInputChange = (event) => {
+    const handleInputChange = (event) => {
         const { id, value } = event.target;
         setCategoryInputs((prevInputs) => ({
-          ...prevInputs,
-          [id]: value.trim(),
+            ...prevInputs,
+            [id]: value.trim(),
         }));
-      };
-
-      useEffect(() => {
-        let timerId;
-        if (showCard) {
-          setTimer(60);
-          timerId = setInterval(() => {
-            setTimer((prevTimer) => {
-              if (prevTimer === 1) {
-                setShowCard(false);
-                clearInterval(timerId);
-              }
-              return prevTimer - 1;
-            });
-          }, 1000);
-        }
-        return () => clearInterval(timerId);
-      }, [showCard]);
-
-    const generateRandomLetter = () => {
-        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const randomIndex = Math.floor(Math.random() * alphabet.length);
-        return alphabet[randomIndex];
     };
-
-    const calculateScoreForCategory = (category) => {
-        let score = 0;
-        const userInput = categoryInputs[category] || '';
-    
-        // Check if the typed word matches the selected category
-        if (selectedCategories.includes(category)) {
-            if (userInput === '') {
-                score = 0;
-            } else if (
-                userInput[0].toLowerCase() === randomLetter.toLowerCase() ||
-                userInput[0].toUpperCase() === randomLetter.toUpperCase()
-            ) {
-                score = 10;
-            } else {
-                score = 5;
-                if (suggestions.length > 0 && !suggestions.includes(userInput)) {
-                    score = 0;
-                    // Add misspelled word to the list
-                    setMisspelledWords((prevMisspelledWords) => [
-                        ...prevMisspelledWords,
-                        { word: userInput, suggestions: suggestions },
-                    ]);
-                }
-            }
-        } else {
-            // If the category is not selected, set the score to 0
-            score = 0;
-        }
-        return score;
-    };
-
-
-    const handleCheckboxChange = (event) => {
-        const { name, checked } = event.target;
-        if (checked) {
-            setSelectedCategories((prevSelectedCategories) => [...prevSelectedCategories, name]);
-        } else {
-            setSelectedCategories((prevSelectedCategories) =>
-                prevSelectedCategories.filter((category) => category !== name)
-            );
-        }
-    };
-
 
     const handleCreateRoomClick = () => {
         setShowCard(true);
@@ -178,7 +103,12 @@ const SelectCategoryPage = () => {
         setShowCard(false);
     };
 
-console.log(selectedCategories.word, selectedCategories.meaning)
+    const generateRandomLetter = () => {
+        const alphabet = 'J';
+        const randomIndex = Math.floor(Math.random() * alphabet.length);
+        return alphabet[randomIndex];
+    };
+
 
 
 
@@ -269,13 +199,11 @@ console.log(selectedCategories.word, selectedCategories.meaning)
             </div>
             <div className='mt-5'>
                 {selectedCategories.map((category, index) => (
-                    <div key={index} className='flex justify-center'>
+                    <div key={index} className='flex-col justify-center container ml-20'>
+                        <div className='flex'>
                         <span className='text-xl mr-20 mt-2 flex'>
                             {category.word} :
-                            <p className='text-blue-500'>
-                                {/* Display definition if available */}
-                                {category.meaning ? category.meaning : "Definition not available"}
-                            </p>
+
                             =
                         </span>
                         <span className='text-xl mt-2 ml-3 underline'>
@@ -283,7 +211,17 @@ console.log(selectedCategories.word, selectedCategories.meaning)
                             {/* Assuming you have a function for calculating score */}
                             {calculateScoreForCategory(category.word)}
                         </span>
+                        </div>
+
+                        <div>
+                        <p className='text-blue-500'>
+                                {/* Display "Correct" or "Incorrect" based on the comparison */}
+                {category.correct ? "Correct" : "Incorrect"}
+                            </p>
+                        </div>
                     </div>
+
+
                 ))}
             </div>
         </div>
