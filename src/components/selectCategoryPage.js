@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import spellchecker from 'spellchecker';
+
 
 
 
@@ -23,71 +23,127 @@ const SelectCategoryPage = () => {
     async function run(text) {
         try {
             const response = await axios.post(
-                'https://api.sapling.ai/api/v1/statistics',
+                'https://api.sapling.ai/api/v1/spellcheck',
                 {
                     "key": 'DXY4N588FKUPFTI8NHFY34C4XM25IEHF',
+                    session_id: 'test session',
                     text,
                 },
             );
-            const {status, data} = response;
-            console.log({status});
-            console.log(JSON.stringify(data, null, 4));
-            return data;
+            const { status, data } = response;
+            console.log({ status });
+            console.log(JSON.stringify(data, null, 4, text));
+            
+            // Check if there are edits
+            if (data.edits && data.edits.length > 0) {
+                // Apply the first suggestion for correction
+                const correctedText = data.edits[0].replacement;
+                return correctedText;
+            } else {
+                // No edits, text is correct
+                return text;
+            }
         } catch (err) {
             const { msg } = err.response.data;
-            console.log({err: msg});
+            console.log({ err: msg });
             throw new Error(msg);
         }
     }
 
+    // run('lionn');
 
     const handleSubmitResponse = async () => {
         let totalScore = 0;
         const alphabetLowerCase = randomLetter.toLowerCase();
         const alphabetUpperCase = randomLetter.toUpperCase();
-        const updatedCategories = [...selectedCategories]; // Create a copy of selected categories
+        const updatedCategories = []; // Array to hold updated category objects
 
         for (let i = 0; i < selectedCategories.length; i++) {
             const category = selectedCategories[i];
             const userInput = categoryInputs[category] || '';
 
+    
             if (userInput !== '') {
-                if (
+                let score = 0;
+
+                // Check if the first letter matches the alphabet
+                const isCorrect = (
                     userInput[0].toLowerCase() === alphabetLowerCase ||
                     userInput[0].toUpperCase() === alphabetUpperCase
-                ) {
-                    totalScore += 10;
+                );
+                // Call `run` function to check if the word matches the dictionary
+                const correctedValue = await run(userInput);
+
+                if (isCorrect && correctedValue === userInput) {
+                    score += 10;
                 } else {
-                    // Use Sapling API for spell checking
-                    try {
-                        await run(userInput);
-                        // No errors means spelling is correct
-                        totalScore += 10;
-                    } catch (error) {
-                        // Handle misspelled word
-                        console.error('Misspelled word:', userInput);
-                        setMisspelledWords(prevMisspelledWords => [
-                            ...prevMisspelledWords,
-                            { word: userInput }
-                        ]);
-                    }
+                    // Handle misspelled word
+                    console.log('Misspelled word:', userInput);
+                    setMisspelledWords(prevMisspelledWords => [
+                        ...prevMisspelledWords,
+                        { word: userInput }
+                    ]);
                 }
+
+                totalScore += score
+    
+                updatedCategories.push({ word: category, correct: score === 10 }); // Push object with word and correctness
             }
         }
-
+    
         // Update state with the updated categories and total score
         setSelectedCategories(updatedCategories);
         setTotalScore(totalScore);
         setShowResultCard(true);
     };
+    
+    const calculateScoreForCategory = (category) => {
+        const categoryObj = selectedCategories.find(cat => cat.word === category); // Find the corresponding object
+        if (categoryObj) {
+            return categoryObj.correct ? 10 : 0; // Return score based on correctness
+        }
+        return 0; // Default score if category not found
+    };
 
-    const handleInputChange = (event) => {
+
+
+
+    const handleInputChange = async (event) => {
         const { id, value } = event.target;
+        // const correctedValue = await run(value);
         setCategoryInputs((prevInputs) => ({
             ...prevInputs,
             [id]: value.trim(),
         }));
     };
+
+    const handleCheckboxChange = (event) => {
+        const { name, checked } = event.target;
+        if (checked) {
+            setSelectedCategories((prevSelectedCategories) => [...prevSelectedCategories, name]);
+        } else {
+            setSelectedCategories((prevSelectedCategories) =>
+                prevSelectedCategories.filter((category) => category !== name)
+            );
+        }
+    };
+
+    // const calculateScoreForCategory = (category) => {
+    //     let score = 0;
+    //     const userInput = document.getElementById(category)?.value.trim();
+    //     if (userInput === '') {
+    //         score = 0;
+    //     } else if (
+    //         userInput[0].toLowerCase() === randomLetter.toLowerCase() ||
+    //         userInput[0].toUpperCase() === randomLetter.toUpperCase()
+    //     ) {
+    //         score = 10;
+    //     } else {
+    //         score = 5;
+    //     }
+    //     return score;
+    // };
+
 
     const handleCreateRoomClick = () => {
         setShowCard(true);
@@ -104,7 +160,7 @@ const SelectCategoryPage = () => {
     };
 
     const generateRandomLetter = () => {
-        const alphabet = 'J';
+        const alphabet = 'ABCDEFGHIJKLMNOPRSTUVWXYZ';
         const randomIndex = Math.floor(Math.random() * alphabet.length);
         return alphabet[randomIndex];
     };
@@ -188,6 +244,8 @@ const SelectCategoryPage = () => {
                 </div>
             )}
 
+
+
 {showResultCard && (
     <div className='fixed top-0 right-0 left-0 w-full h-full'>
         <div className="w-full bg-white h-full" style={{ overflowY: "auto" }}>
@@ -201,32 +259,27 @@ const SelectCategoryPage = () => {
                 {selectedCategories.map((category, index) => (
                     <div key={index} className='flex-col justify-center container ml-20'>
                         <div className='flex'>
-                        <span className='text-xl mr-20 mt-2 flex'>
-                            {category.word} :
-
-                            =
-                        </span>
-                        <span className='text-xl mt-2 ml-3 underline'>
-                            {/* Calculate score for the category here */}
-                            {/* Assuming you have a function for calculating score */}
-                            {calculateScoreForCategory(category.word)}
-                        </span>
+                            <span className='text-xl mr-20 mt-2 flex'>
+                                {category.word} : {categoryInputs[category.word]}  = {/* Display category name and user input */}
+                            </span>
+                            <span className='text-xl mt-2 ml-3 underline'>
+                                {calculateScoreForCategory(category.word)} {/* Display score */}
+                            </span>
                         </div>
-
                         <div>
-                        <p className='text-blue-500'>
-                                {/* Display "Correct" or "Incorrect" based on the comparison */}
-                {category.correct ? "Correct" : "Incorrect"}
+                            <p className='text-blue-500'>
+                                {category.correct ? "Correct" : "Incorrect"} {/* Display correctness */}
                             </p>
                         </div>
                     </div>
-
-
                 ))}
             </div>
         </div>
     </div>
 )}
+
+
+
 
 
         </div>
