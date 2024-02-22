@@ -286,6 +286,7 @@ const SelectCategoryPage = () => {
                         <div>
                             <p className='text-blue-500'>
                                 {category.correct ? "Correct" : "Incorrect"} {/* Display correctness */}
+                                {category.correctedValue ? "Input is correct" : "Wrong Spelling"}
                             </p>
                         </div>
                     </div>
