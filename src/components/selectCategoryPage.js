@@ -156,7 +156,7 @@ const SelectCategoryPage = () => {
 
     const showhandleModalClose = () => {
         setShowResultCard(false);
-        setShowCard(false);
+        setShowCard(false)
     };
 
     const generateRandomLetter = () => {
