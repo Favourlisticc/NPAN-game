@@ -96,6 +96,23 @@ const SelectCategoryPage = () => {
         setTotalScore(totalScore);
         setShowResultCard(true);
     };
+
+    useEffect(() => {
+        let timerId;
+        if (showCard) {
+          setTimer(60);
+          timerId = setInterval(() => {
+            setTimer((prevTimer) => {
+              if (prevTimer === 1) {
+                setShowCard(false);
+                clearInterval(timerId);
+              }
+              return prevTimer - 1;
+            });
+          }, 1000);
+        }
+        return () => clearInterval(timerId);
+      }, [showCard]);
     
     const calculateScoreForCategory = (category) => {
         const categoryObj = selectedCategories.find(cat => cat.word === category); // Find the corresponding object
