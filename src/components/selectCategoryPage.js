@@ -76,6 +76,10 @@ const SelectCategoryPage = () => {
 
                 if (isCorrect && correctedValue === userInput) {
                     score += 10;
+                } else if (!isCorrect && correctedValue === userInput) {
+                    score += 5;
+                } else if (!correctedValue && isCorrect) {
+                    score += 5;
                 } else {
                     // Handle misspelled word
                     console.log('Misspelled word:', userInput);
@@ -117,7 +121,7 @@ const SelectCategoryPage = () => {
     const calculateScoreForCategory = (category) => {
         const categoryObj = selectedCategories.find(cat => cat.word === category); // Find the corresponding object
         if (categoryObj) {
-            return categoryObj.correct ? 10 : 0; // Return score based on correctness
+            return categoryObj.correct ? 10 : 5; // Return score based on correctness
         }
         return 0; // Default score if category not found
     };
@@ -286,11 +290,17 @@ const SelectCategoryPage = () => {
                         <div>
                             <p className='text-blue-500'>
                                 {category.correct ? "Correct" : "Incorrect"} {/* Display correctness */}
-                                {category.correctedValue ? "Input is correct" : "Wrong Spelling"}
+
                             </p>
                         </div>
+
+
                     </div>
+
                 ))}
+                 <div className='text-center text-2xl mt-5'>
+                            Total Score: {totalScore}
+                </div>
             </div>
         </div>
     </div>

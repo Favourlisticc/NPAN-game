@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../App.css';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Navbar from './navbar';
 
 function App() {
@@ -11,6 +11,13 @@ function App() {
   const [joinuserName, joinsetUserName] = useState('');
   const [joinshowInputModal, joinsetShowInputModal] = useState(false);
   const [joinshowConfirmationCard, joinsetShowConfirmationCard] = useState(false);
+
+  const [joinLink, setJoinLink] = useState('');
+
+  const history = useHistory();
+
+
+
 
   const [openHowtoPlay, setOpenHowtoPlay] = useState(false);
 
@@ -61,6 +68,7 @@ function App() {
     // Handle continue action here
     joinsetShowInputModal(false);
     joinsetShowConfirmationCard(true);
+    history.push('/game');
   };
 
   // const joinhandleModalconfirmation =()=>{
@@ -70,7 +78,7 @@ function App() {
   const joinhandleCopyLinkClick = () => {
     // Handle copy link action here
     // For example, you can use the Clipboard API to copy the link to the clipboard
-    console.log('Link copied!');
+    console.log('Link copied!!!!')
   };
 
 
@@ -80,6 +88,11 @@ function App() {
 
   const handleclosesetOpenHowtoPlay = () => {
     setOpenHowtoPlay(false);
+  };
+
+  const copyLinkToClipboard = () => {
+    navigator.clipboard.writeText(joinLink);
+    // You might want to show a message to the user that the link has been copied
   };
 
   return (
@@ -131,33 +144,30 @@ function App() {
         )}
 
 {/* joingame */}
-        {joinshowInputModal && (
-                  <div className="modal-wrapper ">
-                    <div className="modal max-sm:w-80">
-                      <span className="close" onClick={joinhandleModalClose}>&times;</span>
-
-                     <div>
-                     <input
-                        type='text'
-                        placeholder='Name'
-                        className='border-2 mt-6 h-8 px-2 w-52 rounded'
-                        value={joinuserName}
-                        onChange={joinhandleInputChange}
-                      /><br/>
-
-                      <input
-                        type="url"
-                        placeholder='Paste Link'
-                        className='border-2 mt-2 h-8 px-2 w-52 rounded'
-                        value={joinuserName}
-                        onChange={joinhandleInputChange}
-                      /><br/>
-                     </div>
-                      <button onClick={joinhandleContinueClick} className='mt-5 bg-black text-white w-52 h-8 rounded'>Continue</button>
-
-                    </div>
-                  </div>
-                )}
+{joinshowInputModal && (
+        <div className="modal-wrapper">
+          <div className="modal max-sm:w-80">
+            <span className="close" onClick={joinhandleModalClose}>&times;</span>
+            <div>
+              <input
+                type='text'
+                placeholder='Name'
+                className='border-2 mt-6 h-8 px-2 w-52 rounded'
+                value={joinuserName}
+                onChange={joinhandleInputChange}
+              /><br/>
+              <input
+                type="url"
+                placeholder='Paste Link'
+                className='border-2 mt-2 h-8 px-2 w-52 rounded'
+                value={joinLink}
+                onChange={(e) => setJoinLink(e.target.value)}
+              /><br/>
+            </div>
+            <button onClick={joinhandleContinueClick} className='mt-5 bg-black text-white w-52 h-8 rounded'>Continue</button>
+          </div>
+        </div>
+      )}
 
         {openHowtoPlay && (
                           <div className="modal-wrapper" >
