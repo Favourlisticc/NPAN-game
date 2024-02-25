@@ -29,7 +29,7 @@ function App() {
         // Store the username in state or local storage or context API
         // For example, assuming you have a setUsername function to set the username state:
         setUsername(userName);
-        console.log('Username stored successfully');
+        console.log('Username stored successfully', username);
       } else {
         console.error('Failed to store the username');
       }
@@ -51,7 +51,7 @@ function App() {
       });
       if (response.ok) {
         // Redirect to the create category page
-        window.location.href = '/create-category';
+        window.location.href = '/create-categ';
       } else {
         console.error('Failed to start the game');
       }
