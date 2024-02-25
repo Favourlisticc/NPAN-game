@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import '../App.css';
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navbar from './navbar';
 
 function App() {
-  const [playuserName, playsetUserName] = useState('');
+
+  const [username, setUsername] = useState('');
+
   const [playshowInputModal, playsetShowInputModal] = useState(false);
   const [playshowConfirmationCard, playsetShowConfirmationCard] = useState(false);
 
@@ -14,7 +16,51 @@ function App() {
 
   const [joinLink, setJoinLink] = useState('');
 
-  const history = useHistory();
+  const handleStartGame = async (userName) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/store-user-name', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userName }),
+      });
+      if (response.ok) {
+        // Store the username in state or local storage or context API
+        // For example, assuming you have a setUsername function to set the username state:
+        setUsername(userName);
+        console.log('Username stored successfully');
+      } else {
+        console.error('Failed to store the username');
+      }
+    } catch (error) {
+      console.error('Error storing the username:', error);
+    }
+  };
+
+
+
+  const playhandleStartGame = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/start-game', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(username),
+      });
+      if (response.ok) {
+        // Redirect to the create category page
+        window.location.href = '/create-category';
+      } else {
+        console.error('Failed to start the game');
+      }
+    } catch (error) {
+      console.error('Error starting the game:', error);
+    }
+  };
+
+
 
 
 
@@ -22,10 +68,6 @@ function App() {
   const [openHowtoPlay, setOpenHowtoPlay] = useState(false);
 
 
-
-  const playhandleInputChange = (event) => {
-    playsetUserName(event.target.value);
-  };
 
   const playhandlePlayOnlineClick = () => {
     playsetShowInputModal(true);
@@ -39,6 +81,7 @@ function App() {
     // Handle continue action here
     playsetShowInputModal(false);
     playsetShowConfirmationCard(true);
+    handleStartGame(username);
   };
 
   const playhandleModalconfirmation =()=>{
@@ -68,7 +111,7 @@ function App() {
     // Handle continue action here
     joinsetShowInputModal(false);
     joinsetShowConfirmationCard(true);
-    history.push('/game');
+
   };
 
   // const joinhandleModalconfirmation =()=>{
@@ -88,11 +131,6 @@ function App() {
 
   const handleclosesetOpenHowtoPlay = () => {
     setOpenHowtoPlay(false);
-  };
-
-  const copyLinkToClipboard = () => {
-    navigator.clipboard.writeText(joinLink);
-    // You might want to show a message to the user that the link has been copied
   };
 
   return (
@@ -118,8 +156,8 @@ function App() {
                 type='text'
                 placeholder='Name'
                 className='border-2 mt-6 h-8 px-2 w-52 rounded'
-                value={playuserName}
-                onChange={playhandleInputChange}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               /><br/>
               <button onClick={playhandleContinueClick} className='mt-5 bg-black text-white w-52 h-8 rounded'>Continue</button>
             </div>
@@ -132,11 +170,11 @@ function App() {
           <div className="modal-wrapper">
            <div className="modal">
            <span className="close" onClick={playhandleModalconfirmation}>&times;</span>
-            <h2 className='text-xl font-medium mb-7'>Hello, {playuserName}!</h2>
-            <Link to={`/game?name=${playuserName}`} className=' text-xs border-2 py-3 px-1 rounded text-sky-600 underline'>{window.location.origin}/game?name={playuserName}</Link><br/>
+            <h2 className='text-xl font-medium mb-7'>Hello, {username}!</h2>
+            <Link to={`/game?name=${username}`} className=' text-xs border-2 py-3 px-1 rounded text-sky-600 underline'>{window.location.origin}/game?name={username}</Link><br/>
             <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Copy Link</button><br/>
             <button className='mt-8 bg-black text-white w-72 h-10 rounded'>
-              <Link to={`/select-category/${playuserName}`}>Start Game</Link>
+              <Link to={`/select-category/${username}`}>Start Game</Link>
             </button>
 
            </div>
