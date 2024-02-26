@@ -17,6 +17,8 @@ function App() {
         <Route path="/game/:name" element={<MainGamePage />} />
 
 
+
+
         {/* Add more routes as needed */}
       </Routes>
     </div>

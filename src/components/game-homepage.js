@@ -3,18 +3,30 @@ import '../App.css';
 import { Link } from "react-router-dom";
 import Navbar from './navbar';
 
+function generateUniqueLink(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-';
+  let link = '';
+  for (let i = 0; i < length; i++) {
+    link += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return link;
+}
+
 function App() {
 
   const [username, setUsername] = useState('');
 
   const [playshowInputModal, playsetShowInputModal] = useState(false);
   const [playshowConfirmationCard, playsetShowConfirmationCard] = useState(false);
+  const [uniqueLink, setUniqueLink] = useState('');
 
   const [joinuserName, joinsetUserName] = useState('');
   const [joinshowInputModal, joinsetShowInputModal] = useState(false);
   const [joinshowConfirmationCard, joinsetShowConfirmationCard] = useState(false);
 
   const [joinLink, setJoinLink] = useState('');
+
+
 
   const handleStartGame = async (userName) => {
     try {
@@ -40,28 +52,6 @@ function App() {
 
 
 
-  const playhandleStartGame = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/start-game', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(username),
-      });
-      if (response.ok) {
-        // Redirect to the create category page
-        window.location.href = '/create-categ';
-      } else {
-        console.error('Failed to start the game');
-      }
-    } catch (error) {
-      console.error('Error starting the game:', error);
-    }
-  };
-
-
-
 
 
 
@@ -77,12 +67,30 @@ function App() {
     playsetShowInputModal(false);
   };
 
-  const playhandleContinueClick = () => {
+  const playhandleContinueClick = async () => {
     // Handle continue action here
     playsetShowInputModal(false);
     playsetShowConfirmationCard(true);
     handleStartGame(username);
+    const newLink = generateUniqueLink(10);
+    setUniqueLink(newLink);
+  
+    try {
+      const response = await fetch('http://localhost:3001/api/save-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, uniqueLink: newLink }),
+      });
+      if (!response.ok) {
+        console.error('Failed to save the link');
+      }
+    } catch (error) {
+      console.error('Error saving the link:', error);
+    }
   };
+
 
   const playhandleModalconfirmation =()=>{
     playsetShowConfirmationCard(false);
@@ -171,9 +179,14 @@ function App() {
            <div className="modal">
            <span className="close" onClick={playhandleModalconfirmation}>&times;</span>
             <h2 className='text-xl font-medium mb-7'>Hello, {username}!</h2>
-            <Link to={`/game?name=${username}`} className=' text-xs border-2 py-3 px-1 rounded text-sky-600 underline'>{window.location.origin}/game?name={username}</Link><br/>
+
+            <div className='border-2 rounded flex justify-center h-10 pt-2.5 '>
+              <Link to={`/game?name=${username}&link=${uniqueLink}`}  className='text-xs  text-sky-600 underline'>{uniqueLink}</Link><br/>
+
+            </div>
+
             <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Copy Link</button><br/>
-            <button className='mt-8 bg-black text-white w-72 h-10 rounded'>
+            <button className='mt-3 bg-black text-white w-72 h-10 rounded'>
               <Link to={`/select-category/${username}`}>Start Game</Link>
             </button>
 
