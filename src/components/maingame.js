@@ -31,6 +31,28 @@ const MainGamePage = () => {
     }, [link]);
 
 
+    const handleSubmitResponse = () => {
+        axios.post('http://localhost:3001/api/submit-response', {
+          word: categoryInputs[selectedCategories[0]], // Assuming you're checking the first category input
+          randomLetter: randomLetter
+        })
+        .then(response => {
+          // Handle response from the backend
+          const { success, message } = response.data;
+          if (success) {
+            // Handle correct response
+            console.log(message);
+          } else {
+            // Handle incorrect response
+            console.log(message);
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting response:', error);
+        });
+      };
+
+
 
 
     // Function to generate a random alphabet
@@ -45,10 +67,6 @@ const MainGamePage = () => {
         }));
     };
 
-    // Function to handle form submission
-    const handleSubmitResponse = () => {
-        // Implement your submission logic here
-    };
 
     // Effect to update the timer
     useEffect(() => {
