@@ -6,7 +6,7 @@ import axios from 'axios';
 
 
 const SelectCategoryPage = () => {
-    const { name } = useParams();
+    const { name, link } = useParams();
 
     const navigate = useNavigate();
 
@@ -29,23 +29,35 @@ const SelectCategoryPage = () => {
                 prevCheckedCategories.filter((category) => category !== name)
             );
         }
+
+
     };
+
+    console.log(checkedCategories)
 
     const handleSubmitCategories = async () => {
         try {
-            const response = await axios.post('http://localhost:3001/api/submit-categories', {
-                username: name,
-                selectedCategories: checkedCategories
+            const response = await fetch(`http://localhost:3001/api/submit-categories/${link}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ categories: checkedCategories }), // Convert array to JSON string
             });
-            console.log('Categories submitted successfully:', response.data);
-            // Redirect to the main game page after successful submission
-            console.log('Selected categories:', checkedCategories);
-            navigate(`/game/${name}`);
+            const data = await response.json();
+            console.log(data);
+            // Handle success here (e.g., show a success message)
+            navigate(`/game/${name}/${link}`); // Redirect to the main game page
         } catch (error) {
-            console.error('Error submitting categories:', error);
-            console.log(error)
+            console.log('Error submitting categories:', error);
+            // Handle error here (e.g., show an error message)
         }
     };
+    
+
+
+
+
 
     // run('lionn');
 

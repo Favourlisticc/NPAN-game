@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const MainGamePage = () => {
     const location = useLocation();
-    const { name } = useParams(); // Extract categories and name from URL parameters
+    const { name, link } = useParams(); // Extract categories and name from URL parameters
 
     const [categoryInputs, setCategoryInputs] = useState({});
     const [showCard, setShowCard] = useState(false);
@@ -18,27 +18,23 @@ const MainGamePage = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/api/sessions/${name}`)
+        axios.get(`http://localhost:3001/api/selected-categories/${link}`)
             .then(response => {
-                const userSessions = response.data;
-                // Assuming userSessions contains an array of session objects
-                // Extract the categories from userSessions
-                const userCategories = userSessions.map(session => session.categories);
-                // Set the first category as the selected category
-                setSelectedCategory(userCategories[0]);
+                const { selectedCategories, randomLetter } = response.data;
+                setSelectedCategories(selectedCategories);
+                setRandomLetter(randomLetter)
+                console.log(selectedCategories, randomLetter)
             })
             .catch(error => {
-                console.error('Error fetching sessions:', error);
+                console.error('Error fetching selected categories:', error);
             });
-    }, [name]);
+    }, [link]);
+
+
 
 
     // Function to generate a random alphabet
-    const generateRandomLetter = () => {
-        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Corrected the alphabet
-        const randomIndex = Math.floor(Math.random() * alphabet.length);
-        return alphabet[randomIndex];
-    };
+
 
     // Function to handle input change
     const handleInputChange = (event) => {
@@ -65,38 +61,32 @@ const MainGamePage = () => {
         return () => clearInterval(intervalId);
     }, [showCard, timer]);
 
-    // Effect to generate a random letter when the component mounts
-    useEffect(() => {
-        setRandomLetter(generateRandomLetter());
-    }, []);
+
 
     return (
         <div className='p fixed top-0 right-0 left-0 w-full h-full'>
-            <div className="w-full bg-white h-full" style={{ overflowY: "auto" }}>
-                <div className='pt-20' >
-                    <h3 className='text-center text-3xl'>{name}</h3>
-                    <div className='flex justify-between mt-16' >
-                        <div className='ml-28 text-4xl flex max-sm:text-base max-sm:ml-3'>Selected Alphabet: <p className='text-blue-600 max-sm:text-xl'>{randomLetter}</p></div>
-                        <div className='mr-52 text-4xl flex max-sm:text-xl max-sm:mr-2'><p className='text-blue-600'>{timer} </p> seconds</div>
-                    </div>
-                    <div className='flex mt-10 justify-center flex-wrap ml-52 mr-52 max-sm:ml-0 max-sm:mr-0'>
-                        {selectedCategory && sessions.map(session => (
-                            <React.Fragment key={session.id}>
-                                <h3>{session.username}</h3>
-                                {selectedCategory.map((category, index) => (
-                                    <div key={index} className=''>
-                                        <input type='text' id={category} className='border-2 p-3 m-3' placeholder={category} onChange={handleInputChange} />
-                                    </div>
-                                ))}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                    <div className='flex justify-center mt-5'>
-                        <button onClick={handleSubmitResponse} className='mt-5 bg-blue-900 text-white w-64 h-16 text-xl'>Submit response</button>
-                    </div>
+        <div className="w-full bg-white h-full" style={{ overflowY: "auto" }}>
+
+
+            <div className='pt-20' >
+                <h3 className='text-center text-3xl'>{name}</h3>
+                <div className='flex justify-between mt-16' >
+                    <div className=' ml-28 text-4xl flex max-sm:text-base max-sm:ml-3'>Selected Alphabet: <p className='text-blue-600 max-sm:text-xl'>{randomLetter}</p></div>
+                    <div className=' mr-52 text-4xl flex max-sm:text-xl max-sm:mr-2'><p className='text-blue-600'>{timer} </p> seconds</div>
+                </div>
+                <div className='flex mt-10 justify-center flex-wrap ml-52 mr-52 max-sm:ml-0 max-sm:mr-0'>
+                    {selectedCategories.map((category, index) => (
+                        <div key={index} className=''>
+                            <input type='text' id={category} className='border-2 p-3 m-3' placeholder={category} onChange={handleInputChange} />
+                        </div>
+                    ))}
+                </div>
+                <div className='flex justify-center mt-5'>
+                    <button onClick={handleSubmitResponse} className='mt-5 bg-blue-900 text-white w-64 h-16 text-xl'>Submit response</button>
                 </div>
             </div>
         </div>
+    </div>
     );
 };
 

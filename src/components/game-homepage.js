@@ -3,14 +3,6 @@ import '../App.css';
 import { Link } from "react-router-dom";
 import Navbar from './navbar';
 
-function generateUniqueLink(length) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-';
-  let link = '';
-  for (let i = 0; i < length; i++) {
-    link += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return link;
-}
 
 function App() {
 
@@ -37,11 +29,13 @@ function App() {
         },
         body: JSON.stringify({ userName }),
       });
+
       if (response.ok) {
-        // Store the username in state or local storage or context API
-        // For example, assuming you have a setUsername function to set the username state:
-        setUsername(userName);
-        console.log('Username stored successfully', username);
+        const data = await response.json(); // Parse the response JSON
+      console.log(data); // Log the response data
+      setUsername(data.userName); // Set the username
+      setUniqueLink(data.uniqueLink); // Set the unique link
+      playsetShowConfirmationCard(true); // Show the confirmation card
       } else {
         console.error('Failed to store the username');
       }
@@ -49,6 +43,8 @@ function App() {
       console.error('Error storing the username:', error);
     }
   };
+
+
 
 
 
@@ -67,30 +63,13 @@ function App() {
     playsetShowInputModal(false);
   };
 
-  const playhandleContinueClick = async () => {
+  const playhandleContinueClick = () => {
     // Handle continue action here
     playsetShowInputModal(false);
     playsetShowConfirmationCard(true);
     handleStartGame(username);
-    const newLink = generateUniqueLink(10);
-    setUniqueLink(newLink);
-  
-    try {
-      const response = await fetch('http://localhost:3001/api/save-link', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, uniqueLink: newLink }),
-      });
-      if (!response.ok) {
-        console.error('Failed to save the link');
-      }
-    } catch (error) {
-      console.error('Error saving the link:', error);
-    }
-  };
 
+  };
 
   const playhandleModalconfirmation =()=>{
     playsetShowConfirmationCard(false);
@@ -181,13 +160,12 @@ function App() {
             <h2 className='text-xl font-medium mb-7'>Hello, {username}!</h2>
 
             <div className='border-2 rounded flex justify-center h-10 pt-2.5 '>
-              <Link to={`/game?name=${username}&link=${uniqueLink}`}  className='text-xs  text-sky-600 underline'>{uniqueLink}</Link><br/>
-
+                <Link to={`/game?name=${username}&link=${uniqueLink}`} className='text-xs  text-sky-600 underline'>{uniqueLink}</Link><br />
             </div>
 
             <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Copy Link</button><br/>
             <button className='mt-3 bg-black text-white w-72 h-10 rounded'>
-              <Link to={`/select-category/${username}`}>Start Game</Link>
+              <Link to={`/select-category/${username}/${uniqueLink}`}>Start Game</Link>
             </button>
 
            </div>

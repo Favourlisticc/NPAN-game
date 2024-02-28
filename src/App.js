@@ -12,9 +12,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
 
-        <Route path="/select-category/:name" element={<SelectCategoryPage />} />
+        <Route path="/select-category/:name/:link" element={<SelectCategoryPage />} />
 
-        <Route path="/game/:name" element={<MainGamePage />} />
+        <Route path="/game/:name/:link" element={<MainGamePage />} />
 
 
 
