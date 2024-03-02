@@ -118,22 +118,7 @@ const SelectCategoryPage = () => {
                         <input onChange={handleCheckboxChange} type='checkbox' name='Thing' />
                         <label htmlFor="thing" className='text-lg'>Thing</label>
                     </div>
-                    <div className='marr'>
-                        <input onChange={handleCheckboxChange} type='checkbox' name='Song' />
-                        <label htmlFor="song" className='text-lg'>Song</label>
-                    </div>
-                    <div className='marr'>
-                        <input onChange={handleCheckboxChange} type='checkbox' name='Fruits' />
-                        <label htmlFor="fruits" className='text-lg'>Fruits</label>
-                    </div>
-                    <div className='marr'>
-                        <input onChange={handleCheckboxChange} type='checkbox' name='Subject' />
-                        <label htmlFor="subject">Subject</label>
-                    </div>
-                    <div className='marr'>
-                        <input onChange={handleCheckboxChange} type='checkbox' name='Celebrities' />
-                        <label htmlFor="celebrities" className='text-lg'>Celebrities</label>
-                    </div>
+
                 </div>
                 <button className='mt-5 bg-blue-900 text-white w-64 h-16 text-xl' onClick={handleSubmitCategories}>
                    Submit Categories

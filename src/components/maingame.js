@@ -32,25 +32,26 @@ const MainGamePage = () => {
 
 
     const handleSubmitResponse = () => {
-        axios.post('http://localhost:3001/api/submit-response', {
-          word: categoryInputs[selectedCategories[0]], // Assuming you're checking the first category input
-          randomLetter: randomLetter
+        axios.post(`http://localhost:3001/api/submit-response/${link}`, {
+            categoryInputs,
+            randomLetter
         })
         .then(response => {
-          // Handle response from the backend
-          const { success, message } = response.data;
-          if (success) {
-            // Handle correct response
-            console.log(message);
-          } else {
-            // Handle incorrect response
-            console.log(message);
-          }
+            // Handle response from the backend
+            const { success, result, categoryInputs, randomLetter } = response.data;
+            if (success) {
+                // Handle correct response
+                console.log(result, categoryInputs, randomLetter);
+            } else {
+                // Handle incorrect response
+                console.log(result);
+            }
         })
         .catch(error => {
-          console.error('Error submitting response:', error);
+            console.error('Error submitting response:', error);
         });
-      };
+    };
+
 
 
 
