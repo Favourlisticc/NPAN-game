@@ -22,7 +22,10 @@ function App() {
 
   const handleStartGame = async (userName) => {
     try {
-      const response = await fetch('http://localhost:3001/api/store-user-name', {
+      const response = await fetch(
+        // 'http://localhost:3001/api/store-user-name',
+        'https://napn-game-api.onrender.com/api/store-user-name',
+        {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

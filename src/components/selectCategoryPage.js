@@ -37,7 +37,10 @@ const SelectCategoryPage = () => {
 
     const handleSubmitCategories = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/submit-categories/${link}`, {
+            const response = await fetch(
+                // `http://localhost:3001/api/submit-categories/${link}`,
+                `https://napn-game-api.onrender.com/api/submit-categories/${link}`,
+                {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -19,7 +19,10 @@ const MainGamePage = () => {
     const [animalResult, setAnimalResult] = useState(null); // State to hold animal spelling result
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/api/selected-categories/${link}`)
+        axios.get(
+            // `http://localhost:3001/api/selected-categories/${link}`
+            `https://napn-game-api.onrender.com/api/selected-categories/${link}`
+            )
             .then(response => {
                 const { selectedCategories, randomLetter } = response.data;
                 setSelectedCategories(selectedCategories);
@@ -33,7 +36,10 @@ const MainGamePage = () => {
 
 
     const handleSubmitResponse = () => {
-        axios.post(`http://localhost:3001/api/submit-response/${link}`, {
+        axios.post(
+            // `http://localhost:3001/api/submit-response/${link}`,
+            `https://napn-game-api.onrender.com/api/submit-response/${link}`,
+            {
             categoryInputs,
             randomLetter
         })
