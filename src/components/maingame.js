@@ -15,7 +15,8 @@ const MainGamePage = () => {
 
     const [sessions, setSessions] = useState([]);
 
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [result, setResult] = useState({});
+    const [animalResult, setAnimalResult] = useState(null); // State to hold animal spelling result
 
     useEffect(() => {
         axios.get(`http://localhost:3001/api/selected-categories/${link}`)
@@ -38,10 +39,12 @@ const MainGamePage = () => {
         })
         .then(response => {
             // Handle response from the backend
-            const { success, result, categoryInputs, randomLetter } = response.data;
+            const { success, animalResult, result, categoryInputs, randomLetter, animalInput } = response.data;
             if (success) {
                 // Handle correct response
-                console.log(result, categoryInputs, randomLetter);
+                console.log(result, categoryInputs, randomLetter, animalResult);
+                setResult(result); // Set the result
+                setAnimalResult(animalResult, animalInput); // Set the animal result
             } else {
                 // Handle incorrect response
                 console.log(result);
@@ -102,6 +105,18 @@ const MainGamePage = () => {
                 </div>
                 <div className='flex justify-center mt-5'>
                     <button onClick={handleSubmitResponse} className='mt-5 bg-blue-900 text-white w-64 h-16 text-xl'>Submit response</button>
+                </div>
+
+                {/* Display results */}
+                <div className="mt-5 ml-52 mr-52 max-sm:ml-0 max-sm:mr-0">
+                    {/* Display results for selected categories */}
+                    {Object.entries(result).map(([category, status], index) => (
+                        <p key={index} className={`${status === 'correct' ? 'text-green-600' : 'text-red-600'}`}>{category}: {status}</p>
+                    ))}
+                    {/* Display result for animal spelling separately */}
+                    {animalResult !== null && (
+                        <p className={`${animalResult === 'correct' ? 'text-green-600' : 'text-red-600'}`}>Animal Spelling: {animalResult}</p>
+                    )}
                 </div>
             </div>
         </div>
