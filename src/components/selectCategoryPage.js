@@ -56,37 +56,6 @@ const SelectCategoryPage = () => {
             // Handle error here (e.g., show an error message)
         }
     };
-    
-
-
-
-
-
-    // run('lionn');
-
-
-
-
-
-
-
-
-    // const calculateScoreForCategory = (category) => {
-    //     let score = 0;
-    //     const userInput = document.getElementById(category)?.value.trim();
-    //     if (userInput === '') {
-    //         score = 0;
-    //     } else if (
-    //         userInput[0].toLowerCase() === randomLetter.toLowerCase() ||
-    //         userInput[0].toUpperCase() === randomLetter.toUpperCase()
-    //     ) {
-    //         score = 10;
-    //     } else {
-    //         score = 5;
-    //     }
-    //     return score;
-    // };
-
 
 
 

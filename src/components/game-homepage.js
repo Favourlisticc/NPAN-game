@@ -57,7 +57,10 @@ function App() {
   const handleJoinGame = async () => {
     try {
       // Send a POST request to the backend with the name and link in the request body
-      const response = await axios.post('http://localhost:3001/api/check-link-and-save-name', { name: joinuserName, link: joinLink });
+      const response = await axios.post(
+        // 'http://localhost:3001/api/check-link-and-save-name',
+        'https://napn-game-api.onrender.com/api/check-link-and-save-name',
+        { name: joinuserName, link: joinLink });
       if (response.data.available) {
         // If the link is available, navigate the user to the wait page
         navigate(`/wait/${joinLink}/${joinuserName}`);
