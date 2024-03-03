@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import '../App.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from './navbar';
+
+import axios from 'axios';
 
 
 function App() {
@@ -17,6 +19,11 @@ function App() {
   const [joinshowConfirmationCard, joinsetShowConfirmationCard] = useState(false);
 
   const [joinLink, setJoinLink] = useState('');
+
+  const navigate = useNavigate();
+
+  const [link, setLink] = useState('');
+  const [userName, setUserName] = useState('');
 
 
 
@@ -46,6 +53,26 @@ function App() {
       console.error('Error storing the username:', error);
     }
   };
+
+  const handleJoinGame = async () => {
+    try {
+      // Send a POST request to the backend with the name and link in the request body
+      const response = await axios.post('http://localhost:3001/api/check-link-and-save-name', { name: joinuserName, link: joinLink });
+      if (response.data.available) {
+        // If the link is available, navigate the user to the wait page
+        navigate(`/wait/${joinLink}/${joinuserName}`);
+      } else {
+        // If the link is not available, show an error message
+        alert('The link is not available. Please try again.');
+      }
+    } catch (error) {
+      console.log('Error checking link availability and saving name:', error);
+      alert('An error occurred. Please try again later.');
+    }
+  };
+
+
+
 
 
 
@@ -111,7 +138,7 @@ function App() {
   const joinhandleCopyLinkClick = () => {
     // Handle copy link action here
     // For example, you can use the Clipboard API to copy the link to the clipboard
-    console.log('Link copied!!!!')
+    alert('Link copied!!!!')
   };
 
 
@@ -196,7 +223,7 @@ function App() {
                 onChange={(e) => setJoinLink(e.target.value)}
               /><br/>
             </div>
-            <button onClick={joinhandleContinueClick} className='mt-5 bg-black text-white w-52 h-8 rounded'>Continue</button>
+            <button onClick={handleJoinGame} className='mt-5 bg-black text-white w-52 h-8 rounded'>Continue</button>
           </div>
         </div>
       )}

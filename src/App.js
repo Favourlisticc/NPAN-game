@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import SelectCategoryPage from "./components/selectCategoryPage";
 import MainGamePage from "./components/maingame"
+import MultiplayerEnterName from "./components/wait";
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
         <Route path="/select-category/:name/:link" element={<SelectCategoryPage />} />
 
         <Route path="/game/:name/:link" element={<MainGamePage />} />
+
+        <Route path="/wait/:link/:name" element={<MultiplayerEnterName />} />
 
 
 
