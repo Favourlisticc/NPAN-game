@@ -6,6 +6,7 @@ import "./App.css";
 import SelectCategoryPage from "./components/selectCategoryPage";
 import MainGamePage from "./components/maingame"
 import MultiplayerEnterName from "./components/wait";
+import Result from "./components/result";
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
         <Route path="/game/:name/:link" element={<MainGamePage />} />
 
         <Route path="/wait/:link/:name" element={<MultiplayerEnterName />} />
+
+        <Route path="/result" element={<Result/>} />
 
 
 

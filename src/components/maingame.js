@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const MainGamePage = () => {
     const location = useLocation();
     const { name, link } = useParams(); // Extract categories and name from URL parameters
+    const navigate = useNavigate();
 
     const [categoryInputs, setCategoryInputs] = useState({});
-    const [showCard, setShowCard] = useState(false);
+    const [showCard, setShowCard] = useState(true);
     const [timer, setTimer] = useState(60); // Set initial timer value to 60 seconds
     const [randomLetter, setRandomLetter] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
@@ -83,11 +84,20 @@ const MainGamePage = () => {
         let intervalId;
         if (showCard && timer > 0) {
             intervalId = setInterval(() => {
-                setTimer((prevTimer) => prevTimer - 1);
+                setTimer((prevTimer) => {
+                    if (prevTimer === 1) {
+                        // Stop the timer when it reaches 0
+                        clearInterval(intervalId);
+                        setShowCard(false);
+                        // Navigate to result page
+                        navigate('/result');
+                    }
+                    return prevTimer - 1;
+                });
             }, 1000);
         }
         return () => clearInterval(intervalId);
-    }, [showCard, timer]);
+    }, [showCard, timer, navigate]);
 
 
 
