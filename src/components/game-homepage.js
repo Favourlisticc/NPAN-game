@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from './navbar';
@@ -17,6 +17,7 @@ function App() {
   const [joinuserName, joinsetUserName] = useState('');
   const [joinshowInputModal, joinsetShowInputModal] = useState(false);
   const [joinshowConfirmationCard, joinsetShowConfirmationCard] = useState(false);
+  const [copyButtonText, setCopyButtonText] = useState('Copy Link');
 
   const [joinLink, setJoinLink] = useState('');
 
@@ -26,6 +27,14 @@ function App() {
   const [userName, setUserName] = useState('');
 
 
+  useEffect(() => {
+    if (copyButtonText === 'Link copied') {
+      const timeout = setTimeout(() => {
+        setCopyButtonText('Copy Link');
+      }, 3000); // Change back to 'Copy Link' after 3 seconds
+      return () => clearTimeout(timeout);
+    }
+  }, [copyButtonText]);
 
   const handleStartGame = async (userName) => {
     try {
@@ -74,6 +83,15 @@ function App() {
     }
   };
 
+  const handleCopyLinkClick = () => {
+    navigator.clipboard.writeText(uniqueLink)
+      .then(() => {
+        setCopyButtonText('Link copied');
+      })
+      .catch((error) => {
+        console.error('Error copying link:', error);
+      });
+  };
 
 
 
@@ -109,9 +127,7 @@ function App() {
   }
 
   const playhandleCopyLinkClick = () => {
-    // Handle copy link action here
-    // For example, you can use the Clipboard API to copy the link to the clipboard
-    console.log('Link copied!');
+    handleCopyLinkClick();
   };
 
 
@@ -196,7 +212,7 @@ function App() {
                 <Link to={`/game?name=${username}&link=${uniqueLink}`} className='text-xs  text-sky-600 underline'>{uniqueLink}</Link><br />
             </div>
 
-            <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>Copy Link</button><br/>
+            <button className='mt-8 bg-black text-white w-72 h-10 rounded' onClick={playhandleCopyLinkClick}>{copyButtonText}</button><br/>
             <button className='mt-3 bg-black text-white w-72 h-10 rounded'>
               <Link to={`/select-category/${username}/${uniqueLink}`}>Start Game</Link>
             </button>
