@@ -80,24 +80,24 @@ const MainGamePage = () => {
 
 
     // Effect to update the timer
-    useEffect(() => {
-        let intervalId;
-        if (showCard && timer > 0) {
-            intervalId = setInterval(() => {
-                setTimer((prevTimer) => {
-                    if (prevTimer === 1) {
-                        // Stop the timer when it reaches 0
-                        clearInterval(intervalId);
-                        setShowCard(false);
-                        // Navigate to result page
-                        navigate('/result');
-                    }
-                    return prevTimer - 1;
-                });
-            }, 1000);
-        }
-        return () => clearInterval(intervalId);
-    }, [showCard, timer, navigate]);
+    // useEffect(() => {
+    //     let intervalId;
+    //     if (showCard && timer > 0) {
+    //         intervalId = setInterval(() => {
+    //             setTimer((prevTimer) => {
+    //                 if (prevTimer === 1) {
+    //                     // Stop the timer when it reaches 0
+    //                     clearInterval(intervalId);
+    //                     setShowCard(false);
+    //                     // Navigate to result page
+    //                     navigate('/result');
+    //                 }
+    //                 return prevTimer - 1;
+    //             });
+    //         }, 1000);
+    //     }
+    //     return () => clearInterval(intervalId);
+    // }, [showCard, timer, navigate]);
 
 
 
@@ -130,9 +130,7 @@ const MainGamePage = () => {
                         <p key={index} className={`${status === 'correct' ? 'text-green-600' : 'text-red-600'}`}>{category}: {status}</p>
                     ))}
                     {/* Display result for animal spelling separately */}
-                    {animalResult !== null && (
-                        <p className={`${animalResult === 'correct' ? 'text-green-600' : 'text-red-600'}`}>Animal Spelling: {animalResult}</p>
-                    )}
+                    
                 </div>
             </div>
         </div>
