@@ -20,12 +20,28 @@ const MultiplayerEnterName = () => {
         if (ws && ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ type: 'game_started' }));
         }
+        navigate(`/game/${name}/${link}`);
+
+        if (!isCreator ) {
+
+            console.log("done")
+        }
 
     };
 
     const handleJoinGame = () => {
         navigate(`/game/${name}/${link}`);
     };
+
+    const handleWebSocketMessage = (message) => {
+        if (typeof message.data === 'string') {
+          const data = JSON.parse(message.data);
+          if (data.type === 'show_join_button') {
+            setShowJoinButtonForOthers(true);
+            console.log('Join button should be shown now');
+          }
+        }
+      };
 
     // Function to establish WebSocket connection
     // Function to establish WebSocket connection
@@ -47,6 +63,7 @@ const connectWebSocket = () => {
             const data = JSON.parse(message.data);
             if (data.type === 'game_started') {
                 setShowJoinButtonForOthers(true);
+                console.log('Join button should be shown now');
             }
             console.log('Received JSON message from signaling server:', data);
         } else if (message.data instanceof ArrayBuffer) {
@@ -72,6 +89,8 @@ const connectWebSocket = () => {
     useEffect(() => {
         connectWebSocket();
 
+        ws.onmessage = handleWebSocketMessage; // Add event listener
+
         return () => {
             if (ws) {
                 ws.close();
@@ -94,6 +113,9 @@ const connectWebSocket = () => {
 
         fetchPlayers();
     }, [link, name]);
+
+    // Function to handle incoming WebSocket messages
+
 
 
 
@@ -123,11 +145,12 @@ const connectWebSocket = () => {
                 )}
 
                 {/* Conditionally render the Join Game button for other players */}
-                {showJoinButtonForOthers && !isCreator && (
-                    <button onClick={handleJoinGame} className='mt-5 bg-blue-500 text-white w-64 h-16 text-xl'>
-                        Join Game
-                    </button>
-                )}
+                {/* Conditionally render the Join Game button */}
+  {showJoinButtonForOthers && !isCreator && ( /* Add !gameStarted condition */
+    <button onClick={handleJoinGame} className='mt-5 bg-blue-500 text-white w-64 h-16 text-xl'>
+      Join Game
+    </button>
+  )}
 
                 <button className='mt-5 bg-gray-900 text-white w-64 h-16 text-xl'>Cancel</button>
             </div>
