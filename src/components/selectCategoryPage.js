@@ -50,7 +50,8 @@ const SelectCategoryPage = () => {
             const data = await response.json();
             console.log(data);
             // Handle success here (e.g., show a success message)
-            navigate(`/game/${name}/${link}`); // Redirect to the main game page
+            // navigate(`/game/${name}/${link}`); // Redirect to the main game page
+            navigate(`/wait/${link}/${name}`);
         } catch (error) {
             console.log('Error submitting categories:', error);
             // Handle error here (e.g., show an error message)

@@ -8,9 +8,12 @@ import MainGamePage from "./components/maingame"
 import MultiplayerEnterName from "./components/wait";
 import Result from "./components/result";
 
+
+
 function App() {
   return (
     <div className="App">
+
       <Routes>
         <Route path="/" element={<Homepage />} />
 
@@ -25,8 +28,11 @@ function App() {
 
 
 
+
         {/* Add more routes as needed */}
       </Routes>
+
+
     </div>
   );
 }

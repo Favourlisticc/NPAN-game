@@ -3,31 +3,100 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
-
+let ws;
 
 const MultiplayerEnterName = () => {
-
-    const { link } = useParams();
+    const navigate = useNavigate();
+    const { link, name } = useParams();
     const [players, setPlayers] = useState([]);
     const [username, setUsername] = useState('');
+    const [isCreator, setIsCreator] = useState(false);
+    const [gameStarted, setGameStarted] = useState(false);
+    const [showJoinButtonForOthers, setShowJoinButtonForOthers] = useState(false);
+
+    const handleStartGame = () => {
+        setGameStarted(true);
+        setShowJoinButtonForOthers(true);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: 'game_started' }));
+        }
+
+    };
+
+    const handleJoinGame = () => {
+        navigate(`/game/${name}/${link}`);
+    };
+
+    // Function to establish WebSocket connection
+    // Function to establish WebSocket connection
+const connectWebSocket = () => {
+    ws = new WebSocket('ws://localhost:18000');
+
+    ws.onopen = () => {
+        console.log('Connected to signaling server');
+    };
+
+    ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        setTimeout(connectWebSocket, 2000); // Retry after 2 seconds
+    };
+
+    ws.onmessage = (message) => {
+        if (typeof message.data === 'string') {
+            // Handle JSON messages
+            const data = JSON.parse(message.data);
+            if (data.type === 'game_started') {
+                setShowJoinButtonForOthers(true);
+            }
+            console.log('Received JSON message from signaling server:', data);
+        } else if (message.data instanceof ArrayBuffer) {
+            // Handle ArrayBuffer messages
+            const reader = new FileReader();
+            reader.onload = () => {
+                const bufferText = reader.result;
+                const bufferJson = JSON.parse(bufferText);
+                // Here you can handle the bufferJson data and update your state accordingly
+                console.log('Received ArrayBuffer message from signaling server:', bufferJson);
+            };
+            reader.readAsText(message.data);
+        }
+    };
+
+    ws.onclose = (event) => {
+        console.log('WebSocket connection closed:', event);
+        setTimeout(connectWebSocket, 2000);
+    };
+};
+
 
     useEffect(() => {
-        // Fetch players using the unique link
+        connectWebSocket();
+
+        return () => {
+            if (ws) {
+                ws.close();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
         const fetchPlayers = async () => {
             try {
-                const response = await axios.get(
-                    // `http://localhost:3001/api/players/${link}`
-                    `https://napn-game-api.onrender.com/api/players/${link}`
-                    );
+                const response = await axios.get(`https://napn-game-api.onrender.com/api/players/${link}`);
                 setPlayers(response.data.players);
                 setUsername(response.data.username);
+                setIsCreator(response.data.username === name);
+                setGameStarted(response.data.gameStarted);
             } catch (error) {
                 console.error('Error fetching players:', error);
             }
         };
 
         fetchPlayers();
-    }, [link]);
+    }, [link, name]);
+
+
+
 
     return (
         <div className='mt-20'>
@@ -36,12 +105,30 @@ const MultiplayerEnterName = () => {
                 <p className='text-red-500'>{link}</p>
                 <p>Send it to your friends to start the game!</p>
                 <p className='mt-10 text-2xl text-red-500'>Who's Playing?</p>
-               <ul>
-                    <li>{username}</li>
+                <ul>
+                    <li className='flex justify-center ml-20'>{username} <p className='ml-5 underline'> is the creator</p></li>
                     {players.map((player, index) => (
                         <li key={index}>{player}</li>
                     ))}
                 </ul>
+
+                {/* Conditionally render the Start Game button for the creator */}
+                {isCreator && !gameStarted && (
+                    <div className=''>
+                        <button onClick={handleStartGame} className='mt-5 bg-green-500 text-white w-64 h-16 text-xl'>
+                            Start Game
+                        </button>
+                        <br />
+                    </div>
+                )}
+
+                {/* Conditionally render the Join Game button for other players */}
+                {showJoinButtonForOthers && !isCreator && (
+                    <button onClick={handleJoinGame} className='mt-5 bg-blue-500 text-white w-64 h-16 text-xl'>
+                        Join Game
+                    </button>
+                )}
+
                 <button className='mt-5 bg-gray-900 text-white w-64 h-16 text-xl'>Cancel</button>
             </div>
         </div>
