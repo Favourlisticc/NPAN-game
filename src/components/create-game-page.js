@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
+
 function CreateGamePage() {
   const location = useLocation();
   const userName = new URLSearchParams(location.search).get('name');

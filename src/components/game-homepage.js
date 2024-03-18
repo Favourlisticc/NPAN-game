@@ -5,6 +5,8 @@ import Navbar from './navbar';
 
 import axios from 'axios';
 
+import {Helmet} from "react-helmet";
+
 
 function App() {
 
@@ -171,7 +173,13 @@ function App() {
 
   return (
     <div>
+      <Helmet>
+                <meta charSet="utf-8" />
+                <title>Game Homepage</title>
+                <link rel="canonical" href="" />
+            </Helmet>
       <Navbar />
+
        <div className="table-container">
       <h1 className='text-center text-5xl mt-20 max-sm:text-4xl'>NAPT</h1>
       <div className='mt-5 text-center'>

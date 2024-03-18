@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {Helmet} from "react-helmet";
 
 
 
@@ -67,6 +68,13 @@ const SelectCategoryPage = () => {
 
 
     return (
+        <div>
+             <Helmet>
+                <meta charSet="utf-8" />
+                <title>Select Categories PAge</title>
+                <link rel="canonical" href="" />
+            </Helmet>
+
         <div className='mt-20'>
             <div className='text-center'>
                 <h2 className='text-3xl font-semi-bold'>Welcome, {name}!</h2>
@@ -105,6 +113,7 @@ const SelectCategoryPage = () => {
 
 
 
+        </div>
         </div>
     );
 };

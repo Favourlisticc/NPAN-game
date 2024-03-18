@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {Helmet} from "react-helmet";
 
 const MainGamePage = () => {
     const location = useLocation();
@@ -102,6 +103,13 @@ const MainGamePage = () => {
 
 
     return (
+
+      <div>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Main Game Page</title>
+                <link rel="canonical" href="" />
+            </Helmet>
         <div className='p fixed top-0 right-0 left-0 w-full h-full'>
         <div className="w-full bg-white h-full" style={{ overflowY: "auto" }}>
 
@@ -135,6 +143,7 @@ const MainGamePage = () => {
             </div>
         </div>
     </div>
+      </div>
     );
 };
 
