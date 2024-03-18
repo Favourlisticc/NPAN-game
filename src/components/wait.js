@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Helmet } from 'react-helmet';
 
 
 let ws;
@@ -22,6 +21,11 @@ const MultiplayerEnterName = () => {
             ws.send(JSON.stringify({ type: 'game_started' }));
         }
         navigate(`/game/${name}/${link}`);
+
+        if (!isCreator ) {
+
+            console.log("done")
+        }
 
     };
 
@@ -58,12 +62,25 @@ const connectWebSocket = useCallback(() => {
 
         const data = JSON.parse(event.data);
 
+        // if (typeof message.data === 'string') {
+            // Handle JSON messages
+
             if (data.type === 'game_started') {
                 setShowJoinButtonForOthers(true);
                 console.log('Join button should be shown now');
             }
             console.log('Received JSON message from signaling server:', data);
-
+        // } else if (message.data instanceof ArrayBuffer) {
+        //     // Handle ArrayBuffer messages
+        //     const reader = new FileReader();
+        //     reader.onload = () => {
+        //         const bufferText = reader.result;
+        //         const bufferJson = JSON.parse(bufferText);
+        //         // Here you can handle the bufferJson data and update your state accordingly
+        //         console.log('Received ArrayBuffer message from signaling server:', bufferJson);
+        //     };
+            // reader.readAsText(message.data);
+        // }
 
         handleWebSocketMessage(event);
     };
@@ -77,6 +94,8 @@ const connectWebSocket = useCallback(() => {
 
     useEffect(() => {
         connectWebSocket();
+
+        // ws.onmessage = handleWebSocketMessage; // Add event listener
 
         return () => {
             if (ws) {
@@ -108,13 +127,6 @@ const connectWebSocket = useCallback(() => {
 
 
     return (
-        <div>
-            <Helmet>
-                <meta charSet="utf-8" />
-                <title>Wait Page</title>
-                <link rel="canonical" href="" />
-            </Helmet>
-
         <div className='mt-20'>
             <div className='text-center'>
                 <p>Your Game Code is:</p>
@@ -129,18 +141,18 @@ const connectWebSocket = useCallback(() => {
                 </ul>
 
                 {/* Conditionally render the Start Game button for the creator */}
-
+                {isCreator && !gameStarted && (
                     <div className=''>
                         <button onClick={handleStartGame} className='mt-5 bg-green-500 text-white w-64 h-16 text-xl'>
                             Start Game
                         </button>
                         <br />
                     </div>
-                
+                )}
 
                 {/* Conditionally render the Join Game button for other players */}
                 {/* Conditionally render the Join Game button */}
-  {showJoinButtonForOthers && ( /* Add !gameStarted condition */
+  {showJoinButtonForOthers && !isCreator && ( /* Add !gameStarted condition */
     <button onClick={handleJoinGame} className='mt-5 bg-blue-500 text-white w-64 h-16 text-xl'>
       Join Game
     </button>
@@ -148,8 +160,6 @@ const connectWebSocket = useCallback(() => {
 
                 <button className='mt-5 bg-gray-900 text-white w-64 h-16 text-xl'>Cancel</button>
             </div>
-        </div>
-
         </div>
     );
 };
