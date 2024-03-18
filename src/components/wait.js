@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -23,7 +23,7 @@ const MultiplayerEnterName = () => {
         navigate(`/game/${name}/${link}`);
 
         if (!isCreator ) {
-
+            navigate(`/game/${name}/${link}`);
             console.log("done")
         }
 
@@ -45,7 +45,7 @@ const MultiplayerEnterName = () => {
 
     // Function to establish WebSocket connection
     // Function to establish WebSocket connection
-const connectWebSocket = () => {
+const connectWebSocket = useCallback(() => {
     ws = new WebSocket('ws://localhost:18000');
 
     ws.onopen = () => {
@@ -57,46 +57,37 @@ const connectWebSocket = () => {
         setTimeout(connectWebSocket, 2000); // Retry after 2 seconds
     };
 
-    ws.onmessage = (message) => {
-        if (typeof message.data === 'string') {
-            // Handle JSON messages
-            const data = JSON.parse(message.data);
+    ws.onmessage = function(event) {
+        console.log(event);
+
+        const data = JSON.parse(event.data);
+
             if (data.type === 'game_started') {
                 setShowJoinButtonForOthers(true);
                 console.log('Join button should be shown now');
             }
             console.log('Received JSON message from signaling server:', data);
-        } else if (message.data instanceof ArrayBuffer) {
-            // Handle ArrayBuffer messages
-            const reader = new FileReader();
-            reader.onload = () => {
-                const bufferText = reader.result;
-                const bufferJson = JSON.parse(bufferText);
-                // Here you can handle the bufferJson data and update your state accordingly
-                console.log('Received ArrayBuffer message from signaling server:', bufferJson);
-            };
-            reader.readAsText(message.data);
-        }
+
+
+        handleWebSocketMessage(event);
     };
 
     ws.onclose = (event) => {
         console.log('WebSocket connection closed:', event);
         setTimeout(connectWebSocket, 2000);
     };
-};
+}, []);
 
 
     useEffect(() => {
         connectWebSocket();
-
-        ws.onmessage = handleWebSocketMessage; // Add event listener
 
         return () => {
             if (ws) {
                 ws.close();
             }
         };
-    }, []);
+    }, [connectWebSocket]);
 
     useEffect(() => {
         const fetchPlayers = async () => {
