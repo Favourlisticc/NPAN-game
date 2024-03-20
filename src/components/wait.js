@@ -10,7 +10,7 @@ const MultiplayerEnterName = () => {
     const { link, name } = useParams();
     const [players, setPlayers] = useState([]);
     const [username, setUsername] = useState('');
-    const [isCreator, setIsCreator] = useState(false);
+    const [isCreatorr, setIsCreatorr] = useState(false);
     const [gameStarted, setGameStarted] = useState(false);
     const [showJoinButtonForOthers, setShowJoinButtonForOthers] = useState(false);
 
@@ -22,7 +22,7 @@ const MultiplayerEnterName = () => {
         }
         navigate(`/game/${name}/${link}`);
 
-        if (!isCreator ) {
+        if (!isCreatorr ) {
 
             console.log("done")
         }
@@ -46,7 +46,7 @@ const MultiplayerEnterName = () => {
     // Function to establish WebSocket connection
     // Function to establish WebSocket connection
 const connectWebSocket = useCallback(() => {
-    ws = new WebSocket('ws://localhost:18000');
+    ws = new WebSocket('ws:napn-game-api.onrender.com:5000');
 
     ws.onopen = () => {
         console.log('Connected to signaling server');
@@ -110,7 +110,7 @@ const connectWebSocket = useCallback(() => {
                 const response = await axios.get(`https://napn-game-api.onrender.com/api/players/${link}`);
                 setPlayers(response.data.players);
                 setUsername(response.data.username);
-                setIsCreator(response.data.username === name);
+                setIsCreatorr(response.data.username === name);
                 setGameStarted(response.data.gameStarted);
             } catch (error) {
                 console.error('Error fetching players:', error);
@@ -141,7 +141,7 @@ const connectWebSocket = useCallback(() => {
                 </ul>
 
                 {/* Conditionally render the Start Game button for the creator */}
-                {isCreator && !gameStarted && (
+                {isCreatorr && !gameStarted && (
                     <div className=''>
                         <button onClick={handleStartGame} className='mt-5 bg-green-500 text-white w-64 h-16 text-xl'>
                             Start Game
@@ -152,7 +152,7 @@ const connectWebSocket = useCallback(() => {
 
                 {/* Conditionally render the Join Game button for other players */}
                 {/* Conditionally render the Join Game button */}
-  {showJoinButtonForOthers && !isCreator && ( /* Add !gameStarted condition */
+  {showJoinButtonForOthers && !isCreatorr && ( /* Add !gameStarted condition */
     <button onClick={handleJoinGame} className='mt-5 bg-blue-500 text-white w-64 h-16 text-xl'>
       Join Game
     </button>
