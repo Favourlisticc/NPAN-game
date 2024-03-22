@@ -46,7 +46,7 @@ const MultiplayerEnterName = () => {
     // Function to establish WebSocket connection
     // Function to establish WebSocket connection
 const connectWebSocket = useCallback(() => {
-    ws = new WebSocket('wss:napn-game-api.onrender.com');
+    ws = new WebSocket('wss://websocket-napngame.onrender.com/');
 
     ws.onopen = () => {
         console.log('Connected to signaling server');
