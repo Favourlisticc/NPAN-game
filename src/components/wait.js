@@ -46,7 +46,7 @@ const MultiplayerEnterName = () => {
     // Function to establish WebSocket connection
     // Function to establish WebSocket connection
 const connectWebSocket = useCallback(() => {
-    ws = new WebSocket('ws:napn-game-api.onrender.com:5000');
+    ws = new WebSocket('wss:npan-game.onrender.com:18000');
 
     ws.onopen = () => {
         console.log('Connected to signaling server');
@@ -141,14 +141,14 @@ const connectWebSocket = useCallback(() => {
                 </ul>
 
                 {/* Conditionally render the Start Game button for the creator */}
-                {isCreatorr && !gameStarted && (
+
                     <div className=''>
                         <button onClick={handleStartGame} className='mt-5 bg-green-500 text-white w-64 h-16 text-xl'>
                             Start Game
                         </button>
                         <br />
                     </div>
-                )}
+
 
                 {/* Conditionally render the Join Game button for other players */}
                 {/* Conditionally render the Join Game button */}
